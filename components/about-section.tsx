@@ -1,22 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { CheckCircle2 } from "lucide-react"
 import Image from "next/image"
-
-const pillars = [
-  "Autonomous AI agents for continuous market monitoring",
-  "Proprietary data pipelines processing 100K+ sources daily",
-  "Human-in-the-loop validation for strategic recommendations",
-  "Real-time dashboards with actionable intelligence",
-]
-
-const stats = [
-  { value: "150+", label: "Clients Served" },
-  { value: "2.4M", label: "Data Points Daily" },
-  { value: "98%", label: "Client Retention" },
-  { value: "24/7", label: "Agent Uptime" },
-]
 
 export default function AboutSection() {
   return (
@@ -25,7 +10,7 @@ export default function AboutSection() {
 
       <div className="relative z-10 mx-auto max-w-7xl">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-          {/* Left: Image + Stats */}
+          {/* Left: Image */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -35,29 +20,12 @@ export default function AboutSection() {
             <div className="relative overflow-hidden rounded-3xl border border-border">
               <Image
                 src="/images/skyline.jpg"
-                alt="Invisioned Marketing office"
+                alt="Invisioned Marketing - AI-powered digital marketing"
                 width={640}
                 height={420}
                 className="h-auto w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-
-              {/* Stats overlay */}
-              <div className="absolute bottom-0 left-0 right-0 grid grid-cols-2 gap-px bg-border/30 sm:grid-cols-4">
-                {stats.map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="bg-background/90 px-4 py-4 text-center backdrop-blur-sm"
-                  >
-                    <div className="font-mono text-2xl font-bold text-primary">
-                      {stat.value}
-                    </div>
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
             </div>
           </motion.div>
 
@@ -68,35 +36,48 @@ export default function AboutSection() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
           >
-            <span className="text-sm font-semibold uppercase tracking-widest text-primary">
+            <h2 className="text-balance text-3xl font-bold text-foreground md:text-4xl">
               About Us
-            </span>
-            <h2 className="mt-3 text-balance text-3xl font-bold text-foreground md:text-4xl">
-              Where deep tech meets a visionary mindset
             </h2>
+            <h3 className="mt-4 text-xl font-semibold text-primary md:text-2xl">
+              Shaping the Future of Digital Marketing with AI
+            </h3>
+            <p className="mt-6 leading-relaxed text-muted-foreground">
+              At Invisioned Marketing, we revolutionize the digital landscape by
+              merging cutting-edge artificial intelligence with human creativity.
+              Our mission is clear: to deliver AI-powered marketing strategies
+              that are smarter, faster, and designed to drive measurable results.
+            </p>
             <p className="mt-4 leading-relaxed text-muted-foreground">
-              Invisioned Marketing is a collective of strategists, data
-              scientists, and AI engineers bound together by a passion for using
-              technology to drive business transformation. We believe the future
-              of consulting is autonomous, intelligent, and always on.
+              As a team of data experts, creative storytellers, and technology
+              innovators, we empower businesses to thrive in an increasingly
+              competitive digital world. From personalized customer experiences
+              to dynamic advertising campaigns and real-time data-driven
+              insights, we specialize in transforming how brands engage and grow
+              their audiences.
             </p>
 
-            <div className="mt-8 flex flex-col gap-4">
-              {pillars.map((pillar) => (
-                <div key={pillar} className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  <span className="text-sm text-muted-foreground">{pillar}</span>
-                </div>
-              ))}
+            <div className="mt-8 rounded-2xl border border-border bg-card p-6 backdrop-blur-sm">
+              <p className="text-sm font-medium leading-relaxed text-foreground">
+                Ready to transform your marketing?
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Schedule a one-on-one consultation with a member of our team
+                today and discover how Invisioned Marketing can unlock your
+                business&apos;s full potential.
+              </p>
+              <motion.a
+                href="#contact"
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow: "0 0 24px rgba(168, 85, 247, 0.3)",
+                }}
+                whileTap={{ scale: 0.98 }}
+                className="mt-4 inline-block rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20"
+              >
+                Schedule Your Consultation
+              </motion.a>
             </div>
-
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="mt-10 rounded-xl border border-primary bg-primary/10 px-6 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/20"
-            >
-              Learn More About Our Mission
-            </motion.button>
           </motion.div>
         </div>
       </div>

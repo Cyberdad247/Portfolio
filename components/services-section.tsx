@@ -4,48 +4,104 @@ import { motion } from "framer-motion"
 import {
   BrainCircuit,
   BarChart3,
+  TrendingUp,
+  MessageSquareMore,
+  Activity,
+  Share2,
+  Mail,
+  PenTool,
   Search,
-  Target,
-  Zap,
-  Users,
+  Layout,
+  ListChecks,
+  FileText,
+  RefreshCw,
+  Megaphone,
 } from "lucide-react"
 
 const services = [
   {
     icon: BrainCircuit,
-    title: "Agentic Market Research",
+    title: "AI Strategy",
     description:
-      "Autonomous AI agents that continuously scan, analyze, and synthesize market intelligence across thousands of data sources in real time.",
+      "Custom AI solutions tailored to your marketing needs",
   },
   {
     icon: BarChart3,
-    title: "Data-Driven Strategy",
+    title: "Data Analytics",
     description:
-      "Transform complex datasets into clear strategic roadmaps with our proprietary analytics frameworks and predictive modeling.",
+      "Advanced analytics to drive informed decisions",
+  },
+  {
+    icon: TrendingUp,
+    title: "Growth Marketing",
+    description:
+      "AI-powered strategies for rapid, sustainable growth",
+  },
+  {
+    icon: MessageSquareMore,
+    title: "AI Chatbots",
+    description:
+      "Intelligent conversation automation for better engagement",
+  },
+  {
+    icon: Activity,
+    title: "Website Analysis",
+    description:
+      "Analyze performance and SEO using Google Analytics and Search Console",
+  },
+  {
+    icon: Share2,
+    title: "Social Media Management",
+    description:
+      "Setup and manage social accounts with tools like Hootsuite and Buffer",
+  },
+  {
+    icon: Mail,
+    title: "Email Marketing",
+    description:
+      "Create targeted email campaigns to engage your audience",
+  },
+  {
+    icon: PenTool,
+    title: "Content Creation",
+    description:
+      "Boost online presence with articles, videos, and graphics",
   },
   {
     icon: Search,
-    title: "Competitive Intelligence",
+    title: "SEO Optimization",
     description:
-      "Deep-dive competitive analysis using AI-powered monitoring systems that track market movements, pricing shifts, and emerging threats.",
+      "Improve search rankings with keyword research and link building",
   },
   {
-    icon: Target,
-    title: "Brand Positioning",
+    icon: Layout,
+    title: "Landing Pages",
     description:
-      "Precision brand strategy informed by sentiment analysis, audience segmentation, and cultural trend mapping at scale.",
+      "Create high-converting landing pages for your campaigns",
   },
   {
-    icon: Zap,
-    title: "Growth Acceleration",
+    icon: ListChecks,
+    title: "Email List Building",
     description:
-      "Identify and exploit high-impact growth vectors through automated opportunity scoring and rapid market validation.",
+      "Collect and utilize email addresses for targeted marketing",
   },
   {
-    icon: Users,
-    title: "Human+AI Consulting",
+    icon: FileText,
+    title: "Website Copywriting",
     description:
-      "Expert consultants augmented by AI copilots deliver strategic guidance that blends human intuition with machine precision.",
+      "Create compelling and effective website content",
+  },
+  {
+    icon: RefreshCw,
+    title: "Website Redesign",
+    description:
+      "Improve user experience and engagement with redesigns",
+  },
+  {
+    icon: Megaphone,
+    title: "Social Media Ads",
+    description:
+      "Promote products/services to targeted social media audiences",
   },
 ]
 
@@ -53,7 +109,7 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.06, delayChildren: 0.1 },
   },
 }
 
@@ -69,7 +125,6 @@ const cardVariants = {
 export default function ServicesSection() {
   return (
     <section id="services" className="relative bg-background px-4 py-24 md:px-8">
-      {/* Subtle ambient glow */}
       <div className="pointer-events-none absolute right-[10%] top-[20%] z-0 h-[30vw] w-[30vw] rounded-full bg-primary/5 blur-[120px]" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
@@ -79,19 +134,11 @@ export default function ServicesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="mb-16"
+          className="mb-16 text-center"
         >
-          <span className="text-sm font-semibold uppercase tracking-widest text-primary">
-            What We Do
-          </span>
-          <h2 className="mt-3 max-w-2xl text-balance text-3xl font-bold text-foreground md:text-5xl">
-            Our collection of AI-powered services spans every stage of business
-            transformation.
+          <h2 className="text-balance text-3xl font-bold text-foreground md:text-5xl">
+            Our Services
           </h2>
-          <p className="mt-4 max-w-xl text-muted-foreground">
-            Explore how we help businesses transform with autonomous research
-            agents and strategic consulting.
-          </p>
         </motion.div>
 
         {/* Services Grid */}
@@ -100,15 +147,16 @@ export default function ServicesSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
           {services.map((service) => (
             <motion.div
               key={service.title}
               variants={cardVariants}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className="group flex flex-col rounded-2xl border border-border bg-card p-6 backdrop-blur-sm transition-colors hover:border-primary/30 hover:bg-muted/30"
             >
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
                 <service.icon className="h-6 w-6" />
               </div>
               <h3 className="text-lg font-bold text-foreground">
@@ -117,11 +165,6 @@ export default function ServicesSection() {
               <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
                 {service.description}
               </p>
-              <div className="mt-6">
-                <span className="text-sm font-medium text-primary transition-colors group-hover:text-secondary">
-                  Learn more
-                </span>
-              </div>
             </motion.div>
           ))}
         </motion.div>

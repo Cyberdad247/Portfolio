@@ -2,15 +2,24 @@ import { BrainCircuit } from "lucide-react"
 
 const footerLinks = {
   Services: [
-    "Agentic Research",
-    "Data Strategy",
-    "Competitive Intelligence",
-    "Brand Positioning",
-    "Growth Acceleration",
-    "AI Consulting",
+    "AI Strategy",
+    "Data Analytics",
+    "Growth Marketing",
+    "AI Chatbots",
+    "Website Analysis",
+    "Social Media Management",
+    "Email Marketing",
   ],
-  Company: ["About", "Careers", "Blog", "Press"],
-  Legal: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
+  More: [
+    "Content Creation",
+    "SEO Optimization",
+    "Landing Pages",
+    "Email List Building",
+    "Website Copywriting",
+    "Website Redesign",
+    "Social Media Ads",
+  ],
+  Company: ["About", "Testimonials", "Contact"],
 }
 
 export default function Footer() {
@@ -32,8 +41,8 @@ export default function Footer() {
               </div>
             </div>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              Turning Dreamers Into Visionaries. AI-powered research and
-              consulting for the modern enterprise.
+              Dreams don&apos;t come true, visions do. AI-powered marketing for
+              the modern enterprise.
             </p>
           </div>
 
@@ -82,7 +91,7 @@ export default function Footer() {
               href="#"
               className="text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
-              GitHub
+              Instagram
             </a>
           </div>
         </div>

@@ -13,9 +13,9 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Invisioned Marketing | Agentic Research & Business Consulting",
+  title: "Invisioned Marketing | AI-Powered Digital Marketing Agency",
   description:
-    "We deploy autonomous AI agents to decode market complexities, turning raw data into actionable business visions. Turning Dreamers Into Visionaries.",
+    "Dreams don't come true, visions do. Invisioned Marketing delivers AI-powered marketing strategies that are smarter, faster, and designed to drive measurable results.",
 }
 
 export const viewport: Viewport = {
