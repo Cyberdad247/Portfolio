@@ -2,34 +2,34 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, BrainCircuit } from "lucide-react"
+import { Menu, X } from "lucide-react"
 
 const navLinks = [
-  { label: "Home", href: "#hero" },
-  { label: "Services", href: "#services" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "Solutions", href: "#services" },
+  { label: "Agentic Data", href: "#testimonials" },
+  { label: "Philosophy", href: "#about" },
 ]
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        {/* Logo */}
-        <a href="#hero" className="flex items-center gap-2">
-          <BrainCircuit className="h-7 w-7 text-primary" />
-          <div className="flex flex-col leading-none">
-            <span className="text-sm italic text-secondary">invisioned</span>
-            <span className="text-sm font-bold uppercase tracking-wider text-foreground">
-              Marketing
-            </span>
-          </div>
+    <nav className="fixed left-1/2 top-6 z-50 w-[92%] max-w-5xl -translate-x-1/2">
+      <div className="flex items-center justify-between rounded-full border border-border bg-card backdrop-blur-xl px-6 py-3 md:px-8 md:py-4">
+        {/* Brand */}
+        <a href="#hero" className="flex items-center gap-3">
+          <img
+            src="/images/seal.jpg"
+            alt="Invisioned seal"
+            className="h-9 w-9 rounded-full object-cover animate-pulse"
+          />
+          <span className="text-lg font-bold uppercase tracking-tighter text-foreground">
+            Invisioned{" "}
+            <span className="text-primary">Wealth</span>
+          </span>
         </a>
 
-        {/* Desktop Nav */}
+        {/* Desktop Links */}
         <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <a
@@ -40,13 +40,15 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
-          <a
-            href="#contact"
-            className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-shadow hover:shadow-lg hover:shadow-primary/25"
-          >
-            Get Started
-          </a>
         </div>
+
+        {/* CTA */}
+        <a
+          href="#contact"
+          className="hidden rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-all hover:bg-primary hover:text-foreground md:inline-block"
+        >
+          {"INITIATE // 2026"}
+        </a>
 
         {/* Mobile Toggle */}
         <button
@@ -54,7 +56,7 @@ export default function Navbar() {
           className="text-foreground md:hidden"
           aria-label={isOpen ? "Close menu" : "Open menu"}
         >
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
@@ -62,12 +64,13 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="border-t border-border/50 bg-background/95 backdrop-blur-xl md:hidden"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="mt-2 rounded-2xl border border-border bg-card backdrop-blur-xl"
           >
-            <div className="flex flex-col gap-4 px-6 py-6">
+            <div className="flex flex-col gap-3 px-6 py-5">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
@@ -81,9 +84,9 @@ export default function Navbar() {
               <a
                 href="#contact"
                 onClick={() => setIsOpen(false)}
-                className="mt-2 w-fit rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+                className="mt-2 w-fit rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background"
               >
-                Get Started
+                {"INITIATE // 2026"}
               </a>
             </div>
           </motion.div>
