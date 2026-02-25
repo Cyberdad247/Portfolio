@@ -44,6 +44,7 @@ export default function ContactSection() {
                   type="text"
                   className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   placeholder="John"
+                  suppressHydrationWarning
                 />
               </div>
               <div>
@@ -58,6 +59,7 @@ export default function ContactSection() {
                   type="text"
                   className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   placeholder="Doe"
+                  suppressHydrationWarning
                 />
               </div>
             </div>
@@ -74,6 +76,7 @@ export default function ContactSection() {
                 type="email"
                 className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="john@company.com"
+                suppressHydrationWarning
               />
             </div>
 
@@ -96,6 +99,7 @@ export default function ContactSection() {
               type="submit"
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
+              suppressHydrationWarning
               className="flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-shadow hover:shadow-lg hover:shadow-primary/25"
             >
               Send Message
