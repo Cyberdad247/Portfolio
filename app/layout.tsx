@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   title: "Invisioned Marketing | AI-Powered Digital Marketing Agency",
   description:
     "Dreams don't come true, visions do. Invisioned Marketing delivers AI-powered marketing strategies that are smarter, faster, and designed to drive measurable results.",
+  icons: {
+    icon: "/images/favicon.jpg",
+    apple: "/images/favicon.jpg",
+  },
 }
 
 export const viewport: Viewport = {

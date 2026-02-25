@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { BrainCircuit, Zap } from "lucide-react"
+import { Play } from "lucide-react"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -15,7 +15,7 @@ const containerVariants = {
 }
 
 const itemVariants = {
-  hidden: { y: 24, opacity: 0 },
+  hidden: { y: 30, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
@@ -25,79 +25,81 @@ const itemVariants = {
 
 export default function InvisionedHero() {
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background">
-      {/* Parallax Skyline Background */}
-      <motion.div
-        initial={{ scale: 1.1, opacity: 0 }}
-        animate={{ scale: 1, opacity: 0.15 }}
-        transition={{ duration: 2, ease: "easeOut" }}
-        className="absolute inset-0 z-0 bg-[url('/images/skyline.jpg')] bg-cover bg-center grayscale"
-      />
+    <section className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-white text-zinc-900">
+      {/* VIDEO LAYER */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="h-full w-full object-cover opacity-30 grayscale contrast-125"
+        >
+          <source src="/video/skyline-motion.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px]" />
+      </div>
 
-      {/* Ambient glow effects */}
-      <div className="pointer-events-none absolute left-1/2 top-1/3 z-[1] h-[60vw] w-[60vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/8 blur-[180px]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 z-[1] h-[30vw] w-[30vw] rounded-full bg-secondary/5 blur-[120px]" />
-
-      {/* Content */}
+      {/* CONTENT LAYER */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 pt-32 text-center"
+        className="relative z-10 flex flex-col items-center px-6 pt-24 text-center"
       >
-        {/* System Status Badge */}
-        <motion.div
-          variants={itemVariants}
-          className="mb-8 flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2"
-        >
-          <Zap className="h-3 w-3 text-secondary" />
-          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-            {"System Status: Active // Agentic Research"}
-          </span>
-        </motion.div>
-
-        {/* Main Heading */}
+        {/* Main Heading - Z-Pattern Typography */}
         <motion.h1
           variants={itemVariants}
-          className="text-balance text-6xl font-extrabold leading-[0.9] tracking-tighter md:text-8xl lg:text-9xl"
+          className="text-balance text-6xl font-extrabold leading-[0.85] tracking-tighter md:text-8xl lg:text-9xl"
         >
-          <span className="text-foreground">TURNING </span>
-          <span className="bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
-            DREAMERS
+          <span className="block font-serif italic text-4xl font-normal lowercase tracking-normal text-yellow-500 relative z-20 mb-[-0.5rem] md:text-5xl md:mb-[-1rem] lg:text-6xl lg:mb-[-1.5rem]">
+            invisioned
           </span>
-          <br />
-          <span className="text-foreground">INTO </span>
-          <span className="font-serif italic font-normal lowercase tracking-normal text-secondary">
-            visionaries.
+          <span className="uppercase text-zinc-800 drop-shadow-sm">
+            MARKETING
           </span>
         </motion.h1>
 
-        {/* Subtitle */}
+        {/* Tagline */}
         <motion.p
           variants={itemVariants}
-          className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl"
+          className="mx-auto mt-8 max-w-2xl text-lg font-medium leading-relaxed text-zinc-600 md:text-2xl"
         >
-          A hyper-realistic interface for{" "}
-          <span className="text-foreground font-medium">Invisioned Marketing</span>.
-          Bridging the gap between human intuition and agentic intelligence.
+          Turning{" "}
+          <span className="font-bold text-zinc-900">Dreamers</span> into{" "}
+          <span className="italic text-purple-600">Visionaries.</span>
         </motion.p>
 
-        {/* CTA */}
-        <motion.div variants={itemVariants} className="mt-12">
+        {/* CTA Cluster */}
+        <motion.div
+          variants={itemVariants}
+          className="mt-12 flex flex-col items-center gap-6 md:flex-row md:justify-center"
+        >
           <motion.a
             href="#services"
-            whileHover={{
-              scale: 1.03,
-              boxShadow: "0 0 60px rgba(168, 85, 247, 0.5)",
-            }}
-            whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-3 rounded-2xl bg-primary px-10 py-5 text-base font-bold text-primary-foreground shadow-[0_0_40px_rgba(168,85,247,0.3)] transition-shadow"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="group flex items-center gap-3 rounded-full bg-zinc-900 px-8 py-4 text-lg font-bold text-white transition-all hover:bg-purple-600"
           >
-            <BrainCircuit className="h-6 w-6" />
-            DEPLOY AGENTS
+            <Play className="h-5 w-5 fill-current" />
+            INITIATE PROJECT
           </motion.a>
+          <div className="flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-zinc-400">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
+            {"System Live // 2026"}
+          </div>
         </motion.div>
       </motion.div>
+
+      {/* BRAND ANCHOR: Grey Circle */}
+      <div className="absolute bottom-10 left-10 hidden md:block">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-zinc-200 bg-zinc-100 opacity-50">
+          <div className="h-4 w-4 rounded-full bg-zinc-400" />
+        </div>
+      </div>
+
+      {/* Bottom fade to dark - bridge to next section */}
+      <div className="absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-b from-transparent to-background" />
     </section>
   )
 }
