@@ -1,50 +1,50 @@
-import type { Metadata, Viewport } from "next"
-import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google"
-import "./globals.css"
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import "./globals.css";
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-})
+	subsets: ["latin"],
+	variable: "--font-inter",
+});
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-})
+	subsets: ["latin"],
+	variable: "--font-jetbrains-mono",
+});
 
 const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-})
+	subsets: ["latin"],
+	variable: "--font-playfair",
+});
 
 export const metadata: Metadata = {
-  title: "Invisioned Marketing | AI-Powered Digital Marketing Agency",
-  description:
-    "Dreams don't come true, visions do. Invisioned Marketing delivers AI-powered marketing strategies that are smarter, faster, and designed to drive measurable results.",
-  icons: {
-    icon: "/images/favicon.jpg",
-    apple: "/images/favicon.jpg",
-  },
-}
+	title: "Invisioned Marketing | AI-Powered Digital Marketing Agency",
+	description:
+		"Dreams don't come true, visions do. Invisioned Marketing delivers AI-powered marketing strategies that are smarter, faster, and designed to drive measurable results.",
+	icons: {
+		icon: "/images/favicon.jpg",
+		apple: "/images/favicon.jpg",
+	},
+};
 
 export const viewport: Viewport = {
-  themeColor: "#09090B",
-  width: "device-width",
-  initialScale: 1,
-}
+	themeColor: "#09090B",
+	width: "device-width",
+	initialScale: 1,
+};
 
 export default function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode
+	children: React.ReactNode;
 }) {
-  return (
-    <html lang="en" className="dark">
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} font-sans antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-  )
+	return (
+		<html lang="en" className="dark">
+			<body
+				className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} font-sans antialiased`}
+			>
+				{children}
+			</body>
+		</html>
+	);
 }

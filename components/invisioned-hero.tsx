@@ -1,7 +1,10 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Play } from "lucide-react"
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Play } from "lucide-react";
+
+const MotionLink = motion(Link);
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -12,7 +15,7 @@ const containerVariants = {
       delayChildren: 0.3,
     },
   },
-}
+};
 
 const itemVariants = {
   hidden: { y: 30, opacity: 0 },
@@ -21,7 +24,7 @@ const itemVariants = {
     opacity: 1,
     transition: { type: "spring" as const, stiffness: 80, damping: 20 },
   },
-}
+};
 
 export default function InvisionedHero() {
   return (
@@ -52,7 +55,7 @@ export default function InvisionedHero() {
           variants={itemVariants}
           className="text-balance text-6xl font-extrabold leading-[0.85] tracking-tighter md:text-8xl lg:text-9xl"
         >
-          <span className="block font-serif italic text-4xl font-normal lowercase tracking-normal text-yellow-500 relative z-20 mb-[-0.5rem] md:text-5xl md:mb-[-1rem] lg:text-6xl lg:mb-[-1.5rem]">
+          <span className="relative z-20 mb-[-0.5rem] block font-serif text-4xl font-normal italic lowercase tracking-normal text-yellow-500 md:mb-[-1rem] md:text-5xl lg:mb-[-1.5rem] lg:text-6xl">
             invisioned
           </span>
           <span className="uppercase text-zinc-800 drop-shadow-sm">
@@ -65,9 +68,8 @@ export default function InvisionedHero() {
           variants={itemVariants}
           className="mx-auto mt-8 max-w-2xl text-lg font-medium leading-relaxed text-zinc-600 md:text-2xl"
         >
-          Turning{" "}
-          <span className="font-bold text-zinc-900">Dreamers</span> into{" "}
-          <span className="italic text-purple-600">Visionaries.</span>
+          Turning <span className="font-bold text-zinc-900">Dreamers</span>{" "}
+          into <span className="italic text-purple-600">Visionaries.</span>
         </motion.p>
 
         {/* CTA Cluster */}
@@ -75,15 +77,15 @@ export default function InvisionedHero() {
           variants={itemVariants}
           className="mt-12 flex flex-col items-center gap-6 md:flex-row md:justify-center"
         >
-          <motion.a
-            href="#services"
+          <MotionLink
+            href="/onboarding"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="group flex items-center gap-3 rounded-full bg-zinc-900 px-8 py-4 text-lg font-bold text-white transition-all hover:bg-purple-600"
           >
             <Play className="h-5 w-5 fill-current" />
             INITIATE PROJECT
-          </motion.a>
+          </MotionLink>
           <div className="flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-zinc-400">
             <span className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
             {"System Live // 2026"}
@@ -101,5 +103,5 @@ export default function InvisionedHero() {
       {/* Bottom fade to dark - bridge to next section */}
       <div className="absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-b from-transparent to-background" />
     </section>
-  )
+  );
 }
