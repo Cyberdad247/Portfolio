@@ -75,11 +75,10 @@ export function OnboardingFlow(): JSX.Element {
 							className="flex flex-col items-center bg-zinc-950 px-2 relative z-10"
 						>
 							<div
-								className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-									phaseNum <= currentPhase
+								className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${phaseNum <= currentPhase
 										? "bg-gradient-to-r from-rose-500 to-violet-600 text-white shadow-lg shadow-rose-500/25 ring-2 ring-zinc-950"
 										: "bg-zinc-900 text-zinc-500 border border-zinc-800 ring-2 ring-zinc-950"
-								}`}
+									}`}
 							>
 								{phaseNum < currentPhase ? (
 									<CheckCircle2 className="h-4 w-4" />
