@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 import {
   Activity,
   BrainCircuit,
@@ -158,9 +159,11 @@ export default function AgenticDashboard() {
         >
           <div className="flex items-center gap-4">
             <div className="relative h-12 w-12 shrink-0">
-              <img
+              <Image
                 src="/images/seal.jpg"
                 alt="Invisioned Seal"
+                width={48}
+                height={48}
                 className="h-full w-full rounded-full object-cover opacity-80"
               />
               <div className="absolute inset-0 rounded-full bg-primary/30 blur-xl" />
