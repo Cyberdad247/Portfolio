@@ -7,7 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"lint:strict": "biome check --ignore app/globals.css .",
+		"lint:strict": "biome check . --config-path biome.json",
 		"format": "biome format --write .",
 		"typecheck": "tsc --noEmit"
 	},
