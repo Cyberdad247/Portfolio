@@ -32,4 +32,5 @@ export interface OnboardingData {
 	budgetRange: string;
 	preferredChannels: string;
 	timeline: string;
+	additionalNotes: string;
 }

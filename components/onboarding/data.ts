@@ -24,6 +24,7 @@ export const INITIAL_DATA: OnboardingData = {
 	budgetRange: "",
 	preferredChannels: "",
 	timeline: "",
+	additionalNotes: "",
 };
 
 export const PHASE_CONFIG: Record<PhaseType, PhaseData> = {
@@ -160,7 +161,7 @@ export const PHASE_CONFIG: Record<PhaseType, PhaseData> = {
 				],
 			},
 			{
-				id: "goals",
+				id: "additionalNotes",
 				label: "Additional Notes or Requirements",
 				icon: MessageSquare,
 				type: "textarea",
