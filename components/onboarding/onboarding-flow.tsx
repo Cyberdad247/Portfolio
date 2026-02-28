@@ -1,184 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { type JSX, useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import {
-	User,
-	MessageSquare,
-	Building,
-	Phone,
-	Globe,
-	TrendingUp,
-	Users,
-	Shield,
-	Zap,
-	CheckCircle2,
-} from "lucide-react";
+import { INITIAL_DATA, PHASE_CONFIG } from "./data";
 import { LadyReceptionAvatar } from "./lady-reception-avatar";
 import { PhaseForm } from "./phase-form";
-import type { PhaseType, PhaseData, OnboardingData } from "./types";
+import type { OnboardingData, PhaseType } from "./types";
 
-const INITIAL_DATA: OnboardingData = {
-	name: "",
-	email: "",
-	company: "",
-	phone: "",
-	industry: "",
-	website: "",
-	goals: "",
-	targetAudience: "",
-	currentChallenges: "",
-	budgetRange: "",
-	preferredChannels: "",
-	timeline: "",
-};
-
-const PHASE_CONFIG: Record<PhaseType, PhaseData> = {
-	1: {
-		title: "Welcome & Basic Information",
-		description: "Let's start by getting to know you and your business",
-		icon: User,
-		color: "bg-rose-500",
-		questions: [
-			{
-				id: "name",
-				label: "Your Full Name",
-				icon: User,
-				placeholder: "Lady Anisette",
-			},
-			{
-				id: "email",
-				label: "Email Address",
-				icon: MessageSquare,
-				placeholder: "anisette@example.com",
-				type: "email",
-			},
-			{
-				id: "company",
-				label: "Company Name",
-				icon: Building,
-				placeholder: "The Royal Court",
-			},
-			{
-				id: "phone",
-				label: "Phone Number",
-				icon: Phone,
-				placeholder: "+1 (555) 123-4567",
-				type: "tel",
-			},
-			{
-				id: "industry",
-				label: "Industry",
-				icon: Building,
-				type: "select",
-				options: [
-					"Technology",
-					"E-commerce",
-					"Healthcare",
-					"Finance",
-					"Education",
-					"Professional Services",
-					"Other",
-				],
-			},
-			{
-				id: "website",
-				label: "Website",
-				icon: Globe,
-				placeholder: "https://example.com",
-			},
-		],
-	},
-	2: {
-		title: "Business Goals & Target Audience",
-		description:
-			"Help us understand your marketing objectives and ideal customers",
-		icon: TrendingUp,
-		color: "bg-amber-500",
-		questions: [
-			{
-				id: "goals",
-				label: "What are your primary marketing goals?",
-				icon: TrendingUp,
-				type: "textarea",
-				placeholder: "Increase brand awareness, generate more leads...",
-			},
-			{
-				id: "targetAudience",
-				label: "Describe your target audience",
-				icon: Users,
-				type: "textarea",
-				placeholder: "Age range, interests, location, pain points...",
-			},
-			{
-				id: "currentChallenges",
-				label: "What are your biggest marketing challenges?",
-				icon: Shield,
-				type: "textarea",
-				placeholder: "Limited budget, lack of time, inconsistent results...",
-			},
-			{
-				id: "budgetRange",
-				label: "Monthly Marketing Budget Range",
-				icon: TrendingUp,
-				type: "select",
-				options: [
-					"Less than $1,000",
-					"$1,000 - $5,000",
-					"$5,000 - $10,000",
-					"$10,000 - $25,000",
-					"$25,000+",
-					"Not sure",
-				],
-			},
-			{
-				id: "preferredChannels",
-				label: "Preferred Marketing Channels",
-				icon: MessageSquare,
-				type: "select",
-				options: [
-					"Social Media",
-					"Email Marketing",
-					"SEO",
-					"PPC",
-					"Content Marketing",
-					"Multi-channel",
-				],
-			},
-		],
-	},
-	3: {
-		title: "Strategy Alignment & Timeline",
-		description: "Let's align on your strategy and implementation timeline",
-		icon: Zap,
-		color: "bg-violet-500",
-		questions: [
-			{
-				id: "timeline",
-				label: "When would you like to start?",
-				icon: Zap,
-				type: "select",
-				options: [
-					"Immediately",
-					"Within 1 week",
-					"Within 1 month",
-					"Just exploring",
-					"Flexible",
-				],
-			},
-			{
-				id: "goals",
-				label: "Additional Notes or Requirements",
-				icon: MessageSquare,
-				type: "textarea",
-				placeholder: "Any specific requirements, preferences, or questions...",
-			},
-		],
-	},
-};
-
-export function OnboardingFlow() {
+export function OnboardingFlow(): JSX.Element {
 	const router = useRouter();
 	const [currentPhase, setCurrentPhase] = useState<PhaseType>(1);
 	const [formData, setFormData] = useState<OnboardingData>(INITIAL_DATA);
@@ -188,12 +19,12 @@ export function OnboardingFlow() {
 	const progress = (currentPhase / 3) * 100;
 
 	const handleInputChange = (id: string, value: string) => {
-		setFormData((prev) => ({ ...prev, [id]: value }));
+		setFormData((prev: OnboardingData) => ({ ...prev, [id]: value }));
 	};
 
 	const handleNextPhase = () => {
 		if (currentPhase < 3) {
-			setCurrentPhase((prev) => (prev + 1) as PhaseType);
+			setCurrentPhase((prev: PhaseType) => (prev + 1) as PhaseType);
 		} else {
 			handleCompleteOnboarding();
 		}
@@ -201,7 +32,7 @@ export function OnboardingFlow() {
 
 	const handlePreviousPhase = () => {
 		if (currentPhase > 1) {
-			setCurrentPhase((prev) => (prev - 1) as PhaseType);
+			setCurrentPhase((prev: PhaseType) => (prev - 1) as PhaseType);
 		} else {
 			router.push("/");
 		}
@@ -244,10 +75,11 @@ export function OnboardingFlow() {
 							className="flex flex-col items-center bg-zinc-950 px-2 relative z-10"
 						>
 							<div
-								className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${phaseNum <= currentPhase
+								className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+									phaseNum <= currentPhase
 										? "bg-gradient-to-r from-rose-500 to-violet-600 text-white shadow-lg shadow-rose-500/25 ring-2 ring-zinc-950"
 										: "bg-zinc-900 text-zinc-500 border border-zinc-800 ring-2 ring-zinc-950"
-									}`}
+								}`}
 							>
 								{phaseNum < currentPhase ? (
 									<CheckCircle2 className="h-4 w-4" />

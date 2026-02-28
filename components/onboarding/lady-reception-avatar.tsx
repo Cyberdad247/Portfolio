@@ -1,15 +1,15 @@
 "use client";
 
-import {
-	Card,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-	CardContent,
-} from "@/components/ui/card";
+import { Mic, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, Mic } from "lucide-react";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import type { PhaseData, PhaseType } from "./types";
 
 interface LadyReceptionAvatarProps {

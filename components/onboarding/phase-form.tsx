@@ -1,15 +1,16 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
+	CardContent,
+	CardDescription,
 	CardHeader,
 	CardTitle,
-	CardDescription,
-	CardContent,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
 	Select,
 	SelectContent,
@@ -17,9 +18,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import type { PhaseData, PhaseType, OnboardingData } from "./types";
+import { Textarea } from "@/components/ui/textarea";
+import type { OnboardingData, PhaseData, PhaseType } from "./types";
 
 interface PhaseFormProps {
 	currentPhase: PhaseType;

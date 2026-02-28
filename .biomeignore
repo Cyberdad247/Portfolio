@@ -1,0 +1,8 @@
+app/globals.css
+dist/
+.next/
+node_modules/
+package-lock.json
+lint_results.log
+lint_output.txt
+lint_errors.log

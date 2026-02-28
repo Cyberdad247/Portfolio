@@ -2,20 +2,20 @@
 
 import { motion } from "framer-motion";
 import {
-	BrainCircuit,
-	BarChart3,
-	TrendingUp,
-	MessageSquareMore,
 	Activity,
-	Share2,
-	Mail,
-	PenTool,
-	Search,
+	BarChart3,
+	BrainCircuit,
+	FileText,
 	Layout,
 	ListChecks,
-	FileText,
-	RefreshCw,
+	Mail,
 	Megaphone,
+	MessageSquareMore,
+	PenTool,
+	RefreshCw,
+	Search,
+	Share2,
+	TrendingUp,
 } from "lucide-react";
 
 const services = [

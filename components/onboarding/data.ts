@@ -1,0 +1,171 @@
+import {
+	Building,
+	Globe,
+	MessageSquare,
+	Phone,
+	Shield,
+	TrendingUp,
+	User,
+	Users,
+	Zap,
+} from "lucide-react";
+import type { OnboardingData, PhaseData, PhaseType } from "./types";
+
+export const INITIAL_DATA: OnboardingData = {
+	name: "",
+	email: "",
+	company: "",
+	phone: "",
+	industry: "",
+	website: "",
+	goals: "",
+	targetAudience: "",
+	currentChallenges: "",
+	budgetRange: "",
+	preferredChannels: "",
+	timeline: "",
+};
+
+export const PHASE_CONFIG: Record<PhaseType, PhaseData> = {
+	1: {
+		title: "Welcome & Basic Information",
+		description: "Let's start by getting to know you and your business",
+		icon: User,
+		color: "bg-rose-500",
+		questions: [
+			{
+				id: "name",
+				label: "Your Full Name",
+				icon: User,
+				placeholder: "Lady Anisette",
+			},
+			{
+				id: "email",
+				label: "Email Address",
+				icon: MessageSquare,
+				placeholder: "anisette@example.com",
+				type: "email",
+			},
+			{
+				id: "company",
+				label: "Company Name",
+				icon: Building,
+				placeholder: "The Royal Court",
+			},
+			{
+				id: "phone",
+				label: "Phone Number",
+				icon: Phone,
+				placeholder: "+1 (555) 123-4567",
+				type: "tel",
+			},
+			{
+				id: "industry",
+				label: "Industry",
+				icon: Building,
+				type: "select",
+				options: [
+					"Technology",
+					"E-commerce",
+					"Healthcare",
+					"Finance",
+					"Education",
+					"Professional Services",
+					"Other",
+				],
+			},
+			{
+				id: "website",
+				label: "Website",
+				icon: Globe,
+				placeholder: "https://example.com",
+			},
+		],
+	},
+	2: {
+		title: "Business Goals & Target Audience",
+		description:
+			"Help us understand your marketing objectives and ideal customers",
+		icon: TrendingUp,
+		color: "bg-amber-500",
+		questions: [
+			{
+				id: "goals",
+				label: "What are your primary marketing goals?",
+				icon: TrendingUp,
+				type: "textarea",
+				placeholder: "Increase brand awareness, generate more leads...",
+			},
+			{
+				id: "targetAudience",
+				label: "Describe your target audience",
+				icon: Users,
+				type: "textarea",
+				placeholder: "Age range, interests, location, pain points...",
+			},
+			{
+				id: "currentChallenges",
+				label: "What are your biggest marketing challenges?",
+				icon: Shield,
+				type: "textarea",
+				placeholder: "Limited budget, lack of time, inconsistent results...",
+			},
+			{
+				id: "budgetRange",
+				label: "Monthly Marketing Budget Range",
+				icon: TrendingUp,
+				type: "select",
+				options: [
+					"Less than $1,000",
+					"$1,000 - $5,000",
+					"$5,000 - $10,000",
+					"$10,000 - $25,000",
+					"$25,000+",
+					"Not sure",
+				],
+			},
+			{
+				id: "preferredChannels",
+				label: "Preferred Marketing Channels",
+				icon: MessageSquare,
+				type: "select",
+				options: [
+					"Social Media",
+					"Email Marketing",
+					"SEO",
+					"PPC",
+					"Content Marketing",
+					"Multi-channel",
+				],
+			},
+		],
+	},
+	3: {
+		title: "Strategy Alignment & Timeline",
+		description: "Let's align on your strategy and implementation timeline",
+		icon: Zap,
+		color: "bg-violet-500",
+		questions: [
+			{
+				id: "timeline",
+				label: "When would you like to start?",
+				icon: Zap,
+				type: "select",
+				options: [
+					"Immediately",
+					"Within 1 week",
+					"Within 1 month",
+					"Just exploring",
+					"Flexible",
+				],
+			},
+			{
+				id: "goals",
+				label: "Additional Notes or Requirements",
+				icon: MessageSquare,
+				type: "textarea",
+				placeholder: "Any specific requirements, preferences, or questions...",
+			},
+		],
+	},
+};

@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import { AnimatePresence, motion } from "framer-motion";
 import {
 	Activity,
 	BrainCircuit,
@@ -11,127 +9,27 @@ import {
 	Globe,
 	Layers,
 	LineChart as LineChartIcon,
-	MessageSquare,
-	Search,
 	ShieldCheck,
 	Zap,
 } from "lucide-react";
+import Image from "next/image";
+import { type JSX, useEffect, useState } from "react";
 import {
-	AreaChart,
 	Area,
+	AreaChart,
+	CartesianGrid,
+	ResponsiveContainer,
+	Tooltip,
 	XAxis,
 	YAxis,
-	CartesianGrid,
-	Tooltip,
-	ResponsiveContainer,
 } from "recharts";
-
-const performanceData = [
-	{ name: "Mon", tasks: 400, insights: 240 },
-	{ name: "Tue", tasks: 300, insights: 139 },
-	{ name: "Wed", tasks: 500, insights: 380 },
-	{ name: "Thu", tasks: 280, insights: 200 },
-	{ name: "Fri", tasks: 590, insights: 430 },
-	{ name: "Sat", tasks: 350, insights: 250 },
-	{ name: "Sun", tasks: 420, insights: 310 },
-];
-
-const agentStatus = [
-	{
-		id: "A-01",
-		name: "Market Scanner",
-		status: "active" as const,
-		icon: Globe,
-	},
-	{
-		id: "A-02",
-		name: "Competitor Analyst",
-		status: "processing" as const,
-		icon: Search,
-	},
-	{
-		id: "A-03",
-		name: "Sentiment Engine",
-		status: "idle" as const,
-		icon: MessageSquare,
-	},
-	{
-		id: "A-04",
-		name: "Strategy Synthesizer",
-		status: "active" as const,
-		icon: BrainCircuit,
-	},
-];
-
-const liveFeedLog = [
-	{
-		id: 1,
-		agent: "A-01",
-		action: 'Scanned 1,500 URLs for keyword "Generative AI Market"',
-		time: "10:45:22",
-	},
-	{
-		id: 2,
-		agent: "A-02",
-		action: "Detected pricing shift in Competitor X quarterly report",
-		time: "10:45:15",
-	},
-	{
-		id: 3,
-		agent: "A-04",
-		action: 'Correlating data points to generate "Q3 Opportunity Brief"',
-		time: "10:44:50",
-	},
-	{
-		id: 4,
-		agent: "A-01",
-		action: "Cross-referencing social signals with news API",
-		time: "10:44:10",
-	},
-];
-
-function StatusBadge({ status }: { status: "active" | "processing" | "idle" }) {
-	const colorMap = {
-		active: {
-			bg: "bg-purple-500/20",
-			text: "text-purple-400",
-			dot: "bg-purple-500",
-		},
-		processing: {
-			bg: "bg-yellow-500/20",
-			text: "text-yellow-400",
-			dot: "bg-yellow-500",
-		},
-		idle: {
-			bg: "bg-zinc-500/20",
-			text: "text-zinc-400",
-			dot: "bg-zinc-500",
-		},
-	};
-	const theme = colorMap[status];
-	return (
-		<div
-			className={`flex items-center gap-2 rounded-full px-2 py-1 text-xs font-medium ${theme.bg} ${theme.text}`}
-		>
-			<span className="relative flex h-2 w-2">
-				{status !== "idle" && (
-					<span
-						className={`absolute inline-flex h-full w-full animate-ping rounded-full ${theme.dot} opacity-75`}
-					/>
-				)}
-				<span
-					className={`relative inline-flex h-2 w-2 rounded-full ${theme.dot}`}
-				/>
-			</span>
-			<span className="uppercase">{status}</span>
-		</div>
-	);
-}
+import { agentStatus, liveFeedLog, performanceData } from "./dashboard/data";
+import { StatusBadge } from "./dashboard/status-badge";
 
 const glassCard =
 	"rounded-2xl border border-border bg-card p-4 backdrop-blur-md relative overflow-hidden";
 
-export default function AgenticDashboard() {
+export default function AgenticDashboard(): JSX.Element {
 	const [currentTime, setCurrentTime] = useState<string>("");
 
 	useEffect(() => {
