@@ -5,7 +5,7 @@ import Image from "next/image"
 
 export default function AboutSection() {
   return (
-    <section id="about" className="relative bg-background px-4 py-24 md:px-8">
+    <section id="brand-philosophy-anchor" className="relative bg-background px-4 py-24 md:px-8">
       <div className="pointer-events-none absolute bottom-[10%] left-[5%] z-0 h-[25vw] w-[25vw] rounded-full bg-secondary/5 blur-[120px]" />
 
       <div className="relative z-10 mx-auto max-w-7xl">

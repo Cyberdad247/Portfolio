@@ -7,7 +7,7 @@ import { Menu, X } from "lucide-react"
 const navLinks = [
   { label: "Solutions", href: "#services" },
   { label: "Agentic Data", href: "#dashboard" },
-  { label: "Philosophy", href: "#about" },
+  { label: "Philosophy", href: "#brand-philosophy-anchor" },
 ]
 
 export default function Navbar() {
