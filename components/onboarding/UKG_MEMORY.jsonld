@@ -1,0 +1,21 @@
+{
+	"@context": "https://schema.org/",
+	"@type": "SoftwareApplication",
+	"name": "Camelot Onboarding Flow",
+	"description": "Multi-phase agentic onboarding system for the Invisioned Marketing platform.",
+	"applicationCategory": "BusinessApplication",
+	"operatingSystem": "Camelot OS v200.0",
+	"featureList": [
+		"Three-phase data collection",
+		"Agentic guidance via Lady Reception (Anya)",
+		"Kinetic data validation",
+		"Voice-command ready (Mic integration)"
+	],
+	"schemaVersion": "1.0.0",
+	"identifier": "CAMELOT_ONBOARDING_001",
+	"maintainer": {
+		"@type": "Organization",
+		"name": "Invisioned Marketing"
+	},
+	"keywords": "onboarding, agentic, nexus, kinetic purity"
+}
