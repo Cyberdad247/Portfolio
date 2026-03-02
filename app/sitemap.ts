@@ -1,15 +1,39 @@
 import type { MetadataRoute } from "next";
+import { siteConfig } from "@/config/site";
+import { services } from "@/config/services.config";
+import { caseStudies } from "@/config/case-studies.config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-	const baseUrl = "https://cyberdad.io"; // Ensure this matches your production URL
+	const baseUrl = siteConfig.url;
 
-	return [
-		{
-			url: baseUrl,
-			lastModified: new Date(),
-			changeFrequency: "monthly",
-			priority: 1,
-		},
-		// Add more routes here as you expand the site
-	];
+	const staticRoutes = [
+		"",
+		"/about",
+		"/services",
+		"/case-studies",
+		"/contact",
+		"/onboarding",
+		"/deep-dive",
+	].map((route) => ({
+		url: `${baseUrl}${route}`,
+		lastModified: new Date(),
+		changeFrequency: "monthly" as const,
+		priority: route === "" ? 1 : 0.8,
+	}));
+
+	const serviceRoutes = services.map((service) => ({
+		url: `${baseUrl}/services/${service.slug}`,
+		lastModified: new Date(),
+		changeFrequency: "monthly" as const,
+		priority: 0.7,
+	}));
+
+	const caseStudyRoutes = caseStudies.map((study) => ({
+		url: `${baseUrl}/case-studies/${study.slug}`,
+		lastModified: new Date(),
+		changeFrequency: "monthly" as const,
+		priority: 0.7,
+	}));
+
+	return [...staticRoutes, ...serviceRoutes, ...caseStudyRoutes];
 }

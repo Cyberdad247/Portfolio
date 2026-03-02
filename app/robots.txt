@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cyberdad.io/sitemap.xml
+Sitemap: https://invisioned-portfolio-v2.vercel.app/sitemap.xml
