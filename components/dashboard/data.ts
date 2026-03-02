@@ -10,33 +10,6 @@ export const performanceData = [
 	{ name: "Sun", tasks: 420, insights: 310 },
 ];
 
-export const agentStatus = [
-	{
-		id: "A-01",
-		name: "Market Scanner",
-		status: "active" as const,
-		icon: Globe,
-	},
-	{
-		id: "A-02",
-		name: "Competitor Analyst",
-		status: "processing" as const,
-		icon: Search,
-	},
-	{
-		id: "A-03",
-		name: "Sentiment Engine",
-		status: "idle" as const,
-		icon: MessageSquare,
-	},
-	{
-		id: "A-04",
-		name: "Strategy Synthesizer",
-		status: "active" as const,
-		icon: BrainCircuit,
-	},
-];
-
 export const liveFeedLog = [
 	{
 		id: 1,
@@ -61,5 +34,24 @@ export const liveFeedLog = [
 		agent: "A-01",
 		action: "Cross-referencing social signals with news API",
 		time: "10:44:10",
+	},
+	{
+		id: 5,
+		agent: "A-05",
+		action: "Orchestrated //SWARM Task DAG for IDE OS Integration",
+		time: "10:43:55",
+	},
+	{
+		id: 6,
+		agent: "A-07",
+		action: "Enforcing L6 Governance: 10-line rule applied to branch-PRP-01",
+		time: "10:43:40",
+	},
+	{
+		id: 7,
+		agent: "A-06",
+		action:
+			"Forging Kinetic Blueprint (docs/agent/TASKS.md) to persistent storage",
+		time: "10:43:22",
 	},
 ];

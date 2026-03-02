@@ -23,7 +23,9 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { agentStatus, liveFeedLog, performanceData } from "./dashboard/data";
+import { agents } from "@/config/agents.config";
+import type { NexusEvent } from "@/lib/nexus-sync";
+import { liveFeedLog as staticFeed, performanceData } from "./dashboard/data";
 import { StatusBadge } from "./dashboard/status-badge";
 
 const glassCard =
@@ -31,6 +33,7 @@ const glassCard =
 
 export default function AgenticDashboard(): JSX.Element {
 	const [currentTime, setCurrentTime] = useState<string>("");
+	const [dynamicLogs, setDynamicLogs] = useState<NexusEvent[]>([]);
 
 	useEffect(() => {
 		setCurrentTime(new Date().toLocaleTimeString());
@@ -38,8 +41,28 @@ export default function AgenticDashboard(): JSX.Element {
 			() => setCurrentTime(new Date().toLocaleTimeString()),
 			1000,
 		);
-		return () => clearInterval(timer);
+
+		// Load initial nexus events
+		const saved = localStorage.getItem("NEXUS_DASHBOARD_EVENTS");
+		if (saved) {
+			setDynamicLogs(JSON.parse(saved));
+		}
+
+		// Listen for real-time updates
+		const handleEvent = (e: Event) => {
+			const customEvent = e as CustomEvent<NexusEvent>;
+			setDynamicLogs((prev) => [customEvent.detail, ...prev].slice(0, 10));
+		};
+
+		window.addEventListener("nexus-dashboard-sync", handleEvent);
+
+		return () => {
+			clearInterval(timer);
+			window.removeEventListener("nexus-dashboard-sync", handleEvent);
+		};
 	}, []);
+
+	const allLogs = [...dynamicLogs, ...staticFeed].slice(0, 10);
 
 	return (
 		<section
@@ -174,7 +197,7 @@ export default function AgenticDashboard(): JSX.Element {
 							<StatusBadge status="active" />
 						</div>
 						<div className="flex-1 space-y-3 overflow-y-auto pr-2">
-							{agentStatus.map((agent) => (
+							{agents.map((agent) => (
 								<div
 									key={agent.id}
 									className="group/agent flex items-center justify-between rounded-lg border border-border/50 bg-muted/30 p-3 transition-colors hover:border-primary/30"
@@ -187,13 +210,23 @@ export default function AgenticDashboard(): JSX.Element {
 											<div className="font-medium text-foreground">
 												{agent.name}
 											</div>
-											<div className="font-mono text-xs text-muted-foreground">
-												{"ID: "}
-												{agent.id}
+											<div className="flex flex-col">
+												<div className="font-mono text-xs text-muted-foreground">
+													{"ID: "}
+													{agent.id}
+												</div>
+												<div className="text-[10px] uppercase tracking-wide text-primary/70 font-semibold">
+													{agent.role}
+												</div>
 											</div>
 										</div>
 									</div>
-									<StatusBadge status={agent.status} />
+									<div className="flex flex-col items-end gap-1">
+										<StatusBadge status={agent.status} />
+										<div className="text-[9px] text-muted-foreground">
+											{agent.metricValue} {agent.metricLabel.split(" ")[0]}
+										</div>
+									</div>
 								</div>
 							))}
 						</div>
@@ -312,13 +345,14 @@ export default function AgenticDashboard(): JSX.Element {
 						</div>
 						<div className="relative flex-1 overflow-y-auto pr-2">
 							<div className="absolute bottom-2 left-[19px] top-2 w-px bg-border" />
-							<AnimatePresence>
-								{liveFeedLog.map((log, index) => (
+							<AnimatePresence mode="popLayout">
+								{allLogs.map((log, index) => (
 									<motion.div
 										key={log.id}
-										initial={{ opacity: 0, y: -20 }}
-										animate={{ opacity: 1, y: 0 }}
-										transition={{ delay: index * 0.1 }}
+										initial={{ opacity: 0, x: -20 }}
+										animate={{ opacity: 1, x: 0 }}
+										exit={{ opacity: 0, scale: 0.95 }}
+										transition={{ duration: 0.3 }}
 										className="group/log relative mb-6 flex gap-4 pl-2"
 									>
 										{/* Timeline Node */}

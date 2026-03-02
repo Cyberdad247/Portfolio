@@ -16,6 +16,7 @@ interface LadyReceptionAvatarProps {
 	currentPhase: PhaseType;
 	phase: PhaseData;
 	isRecording: boolean;
+	isThinking?: boolean;
 	onToggleRecording: () => void;
 }
 
@@ -23,6 +24,7 @@ export function LadyReceptionAvatar({
 	currentPhase,
 	phase,
 	isRecording,
+	isThinking = false,
 	onToggleRecording,
 }: LadyReceptionAvatarProps) {
 	const PhaseIcon = phase.icon;
@@ -40,6 +42,10 @@ export function LadyReceptionAvatar({
 		}
 	};
 
+	const displayMessage = isThinking
+		? "Please wait while I analyze your digital footprint and calibrate the strategy..."
+		: getAvatarMessage();
+
 	return (
 		<Card className="sticky top-24 bg-card/30 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden group">
 			{/* Animated Gradient Border (Ethereal Effect) */}
@@ -48,25 +54,37 @@ export function LadyReceptionAvatar({
 			<CardHeader className="text-center pb-4 relative z-10">
 				<div className="mx-auto mb-6 w-32 h-32 rounded-full relative">
 					{/* Outer Pulse */}
-					<div className="absolute inset-0 rounded-full bg-rose-500/20 animate-pulse blur-xl" />
+					<div
+						className={`absolute inset-0 rounded-full blur-xl transition-colors duration-500 ${isThinking ? "bg-amber-500/30 animate-spin" : "bg-rose-500/20 animate-pulse"}`}
+					/>
 
-					<div className="relative w-full h-full rounded-full bg-gradient-to-br from-rose-400 to-rose-600 p-0.5 shadow-lg">
-						<div className="w-full h-full rounded-full bg-zinc-950 flex items-center justify-center overflow-hidden">
-							<div className="w-24 h-24 rounded-full bg-gradient-to-br from-rose-500/10 to-violet-600/10 flex items-center justify-center">
-								<User className="h-10 w-10 text-rose-500" />
+					<div
+						className={`relative w-full h-full rounded-full p-0.5 shadow-lg transition-transform duration-500 ${isThinking ? "scale-110 rotate-12" : "bg-gradient-to-br from-rose-400 to-rose-600"}`}
+					>
+						<div
+							className={`w-full h-full rounded-full bg-zinc-950 flex items-center justify-center overflow-hidden border-2 ${isThinking ? "border-amber-500/50" : "border-transparent"}`}
+						>
+							<div
+								className={`w-24 h-24 rounded-full flex items-center justify-center transition-colors ${isThinking ? "bg-amber-500/10 animate-pulse" : "bg-gradient-to-br from-rose-500/10 to-violet-600/10"}`}
+							>
+								<User
+									className={`h-10 w-10 transition-colors ${isThinking ? "text-amber-500" : "text-rose-500"}`}
+								/>
 							</div>
 						</div>
 					</div>
 
 					{/* Status Node */}
-					<div className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-zinc-950 bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+					<div
+						className={`absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-zinc-950 shadow-[0_0_10px_rgba(34,197,94,0.5)] transition-colors ${isThinking ? "bg-amber-500 animate-bounce" : "bg-green-500"}`}
+					/>
 				</div>
 
 				<CardTitle className="text-2xl font-bold tracking-tight text-white">
 					{"Lady Reception // Anya"}
 				</CardTitle>
 				<CardDescription className="text-zinc-500 font-mono text-[10px] uppercase tracking-[0.2em] mt-1">
-					{"Neural Interface v2.0"}
+					{isThinking ? "Intelligence Scout Active" : "Neural Interface v2.0"}
 				</CardDescription>
 				<Badge
 					variant="outline"
@@ -81,7 +99,7 @@ export function LadyReceptionAvatar({
 				<div className="bg-zinc-900/40 rounded-xl p-5 border border-white/5 relative group/msg">
 					<div className="absolute -left-1 top-4 w-2 h-2 bg-zinc-900 border-l border-t border-white/5 rotate-[-45deg]" />
 					<p className="text-sm text-zinc-300 leading-relaxed font-medium">
-						{getAvatarMessage()}
+						{displayMessage}
 					</p>
 				</div>
 

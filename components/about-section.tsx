@@ -3,10 +3,12 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 
+import Link from "next/link";
+
 export default function AboutSection() {
 	return (
 		<section
-			id="brand-philosophy-anchor"
+			id="about"
 			className="relative bg-background px-4 py-24 md:px-8"
 		>
 			<div className="pointer-events-none absolute bottom-[10%] left-[5%] z-0 h-[25vw] w-[25vw] rounded-full bg-secondary/5 blur-[120px]" />
@@ -70,17 +72,12 @@ export default function AboutSection() {
 								today and discover how Invisioned Marketing can unlock your
 								business&apos;s full potential.
 							</p>
-							<motion.a
-								href="#contact"
-								whileHover={{
-									scale: 1.02,
-									boxShadow: "0 0 24px rgba(168, 85, 247, 0.3)",
-								}}
-								whileTap={{ scale: 0.98 }}
-								className="mt-4 inline-block rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20"
+							<Link
+								href="/contact"
+								className="mt-4 inline-block rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-transform"
 							>
 								Schedule Your Consultation
-							</motion.a>
+							</Link>
 						</div>
 					</motion.div>
 				</div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
 	Activity,
 	BarChart3,
@@ -159,6 +160,23 @@ export default function ServicesSection() {
 							</p>
 						</motion.div>
 					))}
+				</motion.div>
+
+				{/* CTA to Tiered Services */}
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true }}
+					transition={{ duration: 0.6, delay: 0.4 }}
+					className="mt-16 flex justify-center"
+				>
+					<Link
+						href="/services"
+						className="inline-flex items-center gap-3 rounded-full bg-primary/10 border border-primary/20 px-8 py-4 text-sm font-bold text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+					>
+						EXPLORE AGENTIC OS TIERS // 2026
+						<span>→</span>
+					</Link>
 				</motion.div>
 			</div>
 		</section>

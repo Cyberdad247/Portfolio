@@ -1,12 +1,16 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type JSX, useState } from "react";
+import { type JSX, useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import { useDebounce } from "@/hooks/use-debounce";
+import { emitNexusEvent } from "@/lib/nexus-sync";
+import { logToUKG } from "@/lib/ukg-logger";
+import { AmbientGlow } from "@/components/ui/ambient-glow";
 import { INITIAL_DATA, PHASE_CONFIG } from "./data";
 import { LadyReceptionAvatar } from "./lady-reception-avatar";
 import { PhaseForm } from "./phase-form";
+import { StrategyForgeModal } from "./strategy-forge-modal";
 import type { OnboardingData, PhaseType } from "./types";
 
 export function OnboardingFlow(): JSX.Element {
@@ -14,12 +18,80 @@ export function OnboardingFlow(): JSX.Element {
 	const [currentPhase, setCurrentPhase] = useState<PhaseType>(1);
 	const [formData, setFormData] = useState<OnboardingData>(INITIAL_DATA);
 	const [isRecording, setIsRecording] = useState(false);
+	const [isThinking, setIsThinking] = useState(false);
+	const [isStrategyModalOpen, setIsStrategyModalOpen] = useState(false);
+
+	const debouncedWebsite = useDebounce(formData.website, 1500);
+
+	// [🧠 Neural Persistence]: Load initial state from L2 Kinetic Cache (localStorage)
+	useEffect(() => {
+		const savedData = localStorage.getItem("AOS_ONBOARDING_DATA");
+		if (savedData) {
+			try {
+				setFormData(JSON.parse(savedData));
+			} catch (e) {
+				console.error("Kinetic Cache Read Failure:", e);
+			}
+		}
+	}, []);
+
+	// [🧠 Neural Persistence]: Auto-save to L2 Kinetic Cache
+	useEffect(() => {
+		localStorage.setItem("AOS_ONBOARDING_DATA", JSON.stringify(formData));
+	}, [formData]);
+
+	// [🕵️ Intelligence Scout]: Trigger autonomous reconnaissance on Website URL
+	useEffect(() => {
+		if (
+			debouncedWebsite &&
+			debouncedWebsite.length > 8 &&
+			debouncedWebsite.includes(".")
+		) {
+			triggerAutonomousResearch(debouncedWebsite);
+		}
+	}, [debouncedWebsite]);
 
 	const phase = PHASE_CONFIG[currentPhase];
 	const progress = (currentPhase / 3) * 100;
 
 	const handleInputChange = (id: string, value: string) => {
 		setFormData((prev: OnboardingData) => ({ ...prev, [id]: value }));
+	};
+
+	const triggerAutonomousResearch = async (url: string) => {
+		if (isThinking) return;
+		setIsThinking(true);
+
+		// [⚡Nexus Sync]: Broadcast scan initiation
+		emitNexusEvent({
+			agent: "A-01",
+			action: `Initiated Nano-Browser scan for: ${url}`,
+		});
+
+		// [⚡Kinetic Strike]: Simulating Nano-Browser Intelligence Gathering
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		const companyName = url
+			.replace("https://", "")
+			.replace("http://", "")
+			.replace("www.", "")
+			.split(".")[0];
+
+		setFormData((prev) => ({
+			...prev,
+			company: prev.company || companyName.charAt(0).toUpperCase() + companyName.slice(1),
+			industry: prev.industry || "Technology",
+			goals:
+				prev.goals ||
+				"Accelerate growth and optimize digital presence via Agentic Nexus protocols.",
+		}));
+
+		emitNexusEvent({
+			agent: "A-02",
+			action: `Synthesized background report for ${companyName.toUpperCase()}. Industry: Technology.`,
+		});
+
+		setIsThinking(false);
 	};
 
 	const handleNextPhase = () => {
@@ -38,28 +110,33 @@ export function OnboardingFlow(): JSX.Element {
 		}
 	};
 
-	const handleCompleteOnboarding = async () => {
-		// [⚡Strike] EXECUTE: KINETIC COMPRESSION
-		// biome-ignore lint/suspicious/noConsole: Logged for development phase confirmation
-		console.log("--- ONBOARDING KINETIC SYNC ---");
-		// biome-ignore lint/suspicious/noConsole: Logged for development phase confirmation
-		console.log(
-			"Payload Hashed & Transmitted:",
-			JSON.stringify({ ...formData, _v: "CAMELOT_APEX_v200.0" }, null, 2),
-		);
+	const handleCompleteOnboarding = () => {
+		// [L4 Semantic]: Commit session to UKG
+		logToUKG({
+			type: "ONBOARDING",
+			payload: formData as unknown as Record<string, unknown>,
+			agentId: "Lady-Anya",
+		});
 
-		// Simulate API delay, pending actual backend hookup (L1 Substrate)
-		await new Promise((resolve) => setTimeout(resolve, 1200));
+		// [L5 Agentic]: Final sync to Dashboard
+		emitNexusEvent({
+			agent: "A-03",
+			action: `Onboarding Session for ${formData.company || formData.name} finalized and synced to UKG.`,
+		});
 
-		// Redirect to home or dashboard after completing
-		router.push("/");
+		setIsStrategyModalOpen(true);
+	};
+
+	const handleFinalRedirect = () => {
+		setIsStrategyModalOpen(false);
+		router.push("/dashboard");
 	};
 
 	return (
 		<div className="relative min-h-screen">
 			{/* Ambient glows (L7 Ethereal Layer) */}
-			<div className="pointer-events-none absolute left-[-10%] top-[-10%] z-0 h-[50vw] w-[50vw] rounded-full bg-rose-500/5 blur-[150px]" />
-			<div className="pointer-events-none absolute bottom-[-10%] right-[-10%] z-0 h-[40vw] w-[40vw] rounded-full bg-violet-600/5 blur-[150px]" />
+			<AmbientGlow color="bg-rose-500/5" position="top-left" />
+			<AmbientGlow color="bg-violet-600/5" position="bottom-right" />
 
 			<div className="relative z-10 max-w-6xl mx-auto px-4 py-24">
 				{/* Progress Bar Section (L6 Governance) */}
@@ -87,14 +164,13 @@ export function OnboardingFlow(): JSX.Element {
 								className="flex flex-col items-center bg-background px-4 relative z-10"
 							>
 								<div
-									className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 ${
-										phaseNum <= currentPhase
-											? "bg-gradient-to-r from-rose-500 to-violet-600 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] ring-2 ring-background scale-110"
-											: "bg-zinc-900 text-zinc-500 border border-zinc-800 ring-2 ring-background"
-									}`}
+									className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 ${phaseNum <= currentPhase
+										? "bg-gradient-to-r from-rose-500 to-violet-600 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] ring-2 ring-background scale-110"
+										: "bg-zinc-900 text-zinc-500 border border-zinc-800 ring-2 ring-background"
+										}`}
 								>
 									{phaseNum < currentPhase ? (
-										<CheckCircle2 className="h-5 w-5" />
+										<span className="text-white">✓</span>
 									) : (
 										phaseNum
 									)}
@@ -116,6 +192,7 @@ export function OnboardingFlow(): JSX.Element {
 							currentPhase={currentPhase}
 							phase={phase}
 							isRecording={isRecording}
+							isThinking={isThinking}
 							onToggleRecording={() => setIsRecording(!isRecording)}
 						/>
 					</div>
@@ -130,6 +207,12 @@ export function OnboardingFlow(): JSX.Element {
 								onInputChange={handleInputChange}
 								onNextPhase={handleNextPhase}
 								onPreviousPhase={handlePreviousPhase}
+							/>
+
+							<StrategyForgeModal
+								isOpen={isStrategyModalOpen}
+								onClose={handleFinalRedirect}
+								formData={formData}
 							/>
 						</div>
 					</div>

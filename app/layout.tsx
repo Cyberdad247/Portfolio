@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+import { siteConfig } from "@/config/site";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -18,13 +21,31 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-	title: "Invisioned Marketing | AI-Powered Digital Marketing Agency",
-	description:
-		"Dreams don't come true, visions do. Invisioned Marketing delivers AI-powered marketing strategies that are smarter, faster, and designed to drive measurable results.",
-	icons: {
-		icon: "/images/favicon.jpg",
-		apple: "/images/favicon.jpg",
+	title: {
+		default: siteConfig.defaultTitle,
+		template: `%s | ${siteConfig.name}`,
 	},
+	description: siteConfig.defaultDescription,
+	icons: {
+		icon: siteConfig.logo,
+		apple: siteConfig.logo,
+	},
+	metadataBase: new URL(siteConfig.url),
+	openGraph: {
+		type: "website",
+		locale: siteConfig.locale,
+		url: siteConfig.url,
+		siteName: siteConfig.name,
+		images: [{ url: siteConfig.socialImage }],
+	},
+};
+
+const orgSchema = {
+	"@context": "https://schema.org",
+	"@type": "Organization",
+	name: siteConfig.name,
+	url: siteConfig.url,
+	logo: `${siteConfig.url}${siteConfig.logo}`,
 };
 
 export const viewport: Viewport = {
@@ -43,7 +64,13 @@ export default function RootLayout({
 			<body
 				className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} font-sans antialiased`}
 			>
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+				/>
+				<Navbar />
 				{children}
+				<Footer />
 			</body>
 		</html>
 	);

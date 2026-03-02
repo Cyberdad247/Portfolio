@@ -1,4 +1,5 @@
 import { BrainCircuit } from "lucide-react";
+import Link from "next/link";
 
 const footerLinks = {
 	Services: [
@@ -19,7 +20,11 @@ const footerLinks = {
 		"Website Redesign",
 		"Social Media Ads",
 	],
-	Company: ["About", "Testimonials", "Contact"],
+	Company: [
+		{ label: "About", href: "/about" },
+		{ label: "Case Studies", href: "/case-studies" },
+		{ label: "Contact", href: "/contact" },
+	],
 };
 
 export default function Footer() {
@@ -53,16 +58,26 @@ export default function Footer() {
 								{heading}
 							</h4>
 							<ul className="mt-4 flex flex-col gap-2.5">
-								{links.map((link) => (
-									<li key={link}>
-										<button
-											type="button"
-											className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-										>
-											{link}
-										</button>
-									</li>
-								))}
+								{links.map((link) => {
+									const isObj = typeof link === "object";
+									const label = isObj ? link.label : link;
+									const href = isObj
+										? link.href
+										: heading === "Services" || heading === "More"
+											? "/services"
+											: "/#contact";
+
+									return (
+										<li key={label}>
+											<Link
+												href={href}
+												className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+											>
+												{label}
+											</Link>
+										</li>
+									);
+								})}
 							</ul>
 						</div>
 					))}
