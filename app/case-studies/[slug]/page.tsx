@@ -10,8 +10,9 @@ export const metadata: Metadata = {
     description: "Detailed performance analysis and real-world results from the Invisioned AI-powered marketing OS.",
 };
 
-export default function CaseStudyDetail({ params }: { params: { slug: string } }) {
-    const study = caseStudies.find((cs) => cs.slug === params.slug);
+export default async function CaseStudyDetail({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const study = caseStudies.find((cs) => cs.slug === slug);
 
     if (!study) {
         notFound();

@@ -13,9 +13,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { use } from "react";
 
-export default function ServiceDetailPage({ params }: { params: { slug: string } }) {
-    const service = services.find((s) => s.slug === params.slug);
+export default function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = use(params);
+    const service = services.find((s) => s.slug === slug);
 
     if (!service) {
         return (
