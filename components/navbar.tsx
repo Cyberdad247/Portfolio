@@ -48,8 +48,9 @@ export default function Navbar() {
 						className="h-9 w-9 object-contain"
 					/>
 					<span
-						className={`text-lg font-bold uppercase tracking-tighter transition-colors duration-400 ${scrolled ? "text-white" : "text-zinc-900"
-							}`}
+						className={`text-lg font-bold uppercase tracking-tighter transition-colors duration-400 ${
+							scrolled ? "text-white" : "text-zinc-900"
+						}`}
 					>
 						Invisioned{" "}
 						<span className={scrolled ? "text-primary" : "text-purple-600"}>
@@ -64,10 +65,11 @@ export default function Navbar() {
 						<Link
 							key={link.label}
 							href={link.href}
-							className={`text-sm font-medium transition-colors duration-400 ${scrolled
-								? "text-zinc-400 hover:text-white"
-								: "text-zinc-500 hover:text-zinc-900"
-								}`}
+							className={`text-sm font-medium transition-colors duration-400 ${
+								scrolled
+									? "text-zinc-400 hover:text-white"
+									: "text-zinc-500 hover:text-zinc-900"
+							}`}
 						>
 							{link.label}
 						</Link>
@@ -77,10 +79,11 @@ export default function Navbar() {
 				{/* CTA */}
 				<Link
 					href="/#contact"
-					className={`hidden rounded-full px-5 py-2 text-sm font-bold transition-all duration-400 md:inline-block ${scrolled
-						? "bg-white text-zinc-900 hover:bg-primary hover:text-white"
-						: "bg-zinc-900 text-white hover:bg-purple-600"
-						}`}
+					className={`hidden rounded-full px-5 py-2 text-sm font-bold transition-all duration-400 md:inline-block ${
+						scrolled
+							? "bg-white text-zinc-900 hover:bg-primary hover:text-white"
+							: "bg-zinc-900 text-white hover:bg-purple-600"
+					}`}
 				>
 					{"INITIATE // 2026"}
 				</Link>
@@ -89,8 +92,9 @@ export default function Navbar() {
 				<button
 					type="button"
 					onClick={() => setIsOpen(!isOpen)}
-					className={`transition-colors duration-400 md:hidden ${scrolled ? "text-white" : "text-zinc-900"
-						}`}
+					className={`transition-colors duration-400 md:hidden ${
+						scrolled ? "text-white" : "text-zinc-900"
+					}`}
 					aria-label={isOpen ? "Close menu" : "Open menu"}
 				>
 					{isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -105,10 +109,11 @@ export default function Navbar() {
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: -8 }}
 						transition={{ duration: 0.2 }}
-						className={`mt-2 rounded-2xl backdrop-blur-xl ${scrolled
-							? "border border-border bg-card"
-							: "border border-zinc-200 bg-white/90"
-							}`}
+						className={`mt-2 rounded-2xl backdrop-blur-xl ${
+							scrolled
+								? "border border-border bg-card"
+								: "border border-zinc-200 bg-white/90"
+						}`}
 					>
 						<div className="flex flex-col gap-3 px-6 py-5">
 							{navLinks.map((link) => (
@@ -116,10 +121,11 @@ export default function Navbar() {
 									key={link.label}
 									href={link.href}
 									onClick={() => setIsOpen(false)}
-									className={`text-base font-medium transition-colors ${scrolled
-										? "text-muted-foreground hover:text-foreground"
-										: "text-zinc-500 hover:text-zinc-900"
-										}`}
+									className={`text-base font-medium transition-colors ${
+										scrolled
+											? "text-muted-foreground hover:text-foreground"
+											: "text-zinc-500 hover:text-zinc-900"
+									}`}
 								>
 									{link.label}
 								</Link>
@@ -127,10 +133,11 @@ export default function Navbar() {
 							<Link
 								href="/#contact"
 								onClick={() => setIsOpen(false)}
-								className={`mt-2 w-fit rounded-full px-5 py-2 text-sm font-bold ${scrolled
-									? "bg-foreground text-background"
-									: "bg-zinc-900 text-white"
-									}`}
+								className={`mt-2 w-fit rounded-full px-5 py-2 text-sm font-bold ${
+									scrolled
+										? "bg-foreground text-background"
+										: "bg-zinc-900 text-white"
+								}`}
 							>
 								{"INITIATE // 2026"}
 							</Link>

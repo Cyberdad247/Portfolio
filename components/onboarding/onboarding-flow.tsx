@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { type JSX, useEffect, useState } from "react";
+import { AmbientGlow } from "@/components/ui/ambient-glow";
 import { Progress } from "@/components/ui/progress";
 import { useDebounce } from "@/hooks/use-debounce";
 import { emitNexusEvent } from "@/lib/nexus-sync";
 import { logToUKG } from "@/lib/ukg-logger";
-import { AmbientGlow } from "@/components/ui/ambient-glow";
 import { INITIAL_DATA, PHASE_CONFIG } from "./data";
 import { LadyReceptionAvatar } from "./lady-reception-avatar";
 import { PhaseForm } from "./phase-form";
@@ -40,6 +40,47 @@ export function OnboardingFlow(): JSX.Element {
 		localStorage.setItem("AOS_ONBOARDING_DATA", JSON.stringify(formData));
 	}, [formData]);
 
+	const triggerAutonomousResearch = useCallback(
+		async (url: string) => {
+			if (isThinking) return;
+			setIsThinking(true);
+
+			// [⚡Nexus Sync]: Broadcast scan initiation
+			emitNexusEvent({
+				agent: "A-01",
+				action: `Initiated Nano-Browser scan for: ${url}`,
+			});
+
+			// [⚡Kinetic Strike]: Simulating Nano-Browser Intelligence Gathering
+			await new Promise((resolve) => setTimeout(resolve, 3000));
+
+			const companyName = url
+				.replace("https://", "")
+				.replace("http://", "")
+				.replace("www.", "")
+				.split(".")[0];
+
+			setFormData((prev) => ({
+				...prev,
+				company:
+					prev.company ||
+					companyName.charAt(0).toUpperCase() + companyName.slice(1),
+				industry: prev.industry || "Technology",
+				goals:
+					prev.goals ||
+					"Accelerate growth and optimize digital presence via Agentic Nexus protocols.",
+			}));
+
+			emitNexusEvent({
+				agent: "A-02",
+				action: `Synthesized background report for ${companyName.toUpperCase()}. Industry: Technology.`,
+			});
+
+			setIsThinking(false);
+		},
+		[isThinking],
+	);
+
 	// [🕵️ Intelligence Scout]: Trigger autonomous reconnaissance on Website URL
 	useEffect(() => {
 		if (
@@ -49,49 +90,13 @@ export function OnboardingFlow(): JSX.Element {
 		) {
 			triggerAutonomousResearch(debouncedWebsite);
 		}
-	}, [debouncedWebsite]);
+	}, [debouncedWebsite, triggerAutonomousResearch]);
 
 	const phase = PHASE_CONFIG[currentPhase];
 	const progress = (currentPhase / 3) * 100;
 
 	const handleInputChange = (id: string, value: string) => {
 		setFormData((prev: OnboardingData) => ({ ...prev, [id]: value }));
-	};
-
-	const triggerAutonomousResearch = async (url: string) => {
-		if (isThinking) return;
-		setIsThinking(true);
-
-		// [⚡Nexus Sync]: Broadcast scan initiation
-		emitNexusEvent({
-			agent: "A-01",
-			action: `Initiated Nano-Browser scan for: ${url}`,
-		});
-
-		// [⚡Kinetic Strike]: Simulating Nano-Browser Intelligence Gathering
-		await new Promise((resolve) => setTimeout(resolve, 3000));
-
-		const companyName = url
-			.replace("https://", "")
-			.replace("http://", "")
-			.replace("www.", "")
-			.split(".")[0];
-
-		setFormData((prev) => ({
-			...prev,
-			company: prev.company || companyName.charAt(0).toUpperCase() + companyName.slice(1),
-			industry: prev.industry || "Technology",
-			goals:
-				prev.goals ||
-				"Accelerate growth and optimize digital presence via Agentic Nexus protocols.",
-		}));
-
-		emitNexusEvent({
-			agent: "A-02",
-			action: `Synthesized background report for ${companyName.toUpperCase()}. Industry: Technology.`,
-		});
-
-		setIsThinking(false);
 	};
 
 	const handleNextPhase = () => {
@@ -164,10 +169,11 @@ export function OnboardingFlow(): JSX.Element {
 								className="flex flex-col items-center bg-background px-4 relative z-10"
 							>
 								<div
-									className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 ${phaseNum <= currentPhase
-										? "bg-gradient-to-r from-rose-500 to-violet-600 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] ring-2 ring-background scale-110"
-										: "bg-zinc-900 text-zinc-500 border border-zinc-800 ring-2 ring-background"
-										}`}
+									className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 ${
+										phaseNum <= currentPhase
+											? "bg-gradient-to-r from-rose-500 to-violet-600 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] ring-2 ring-background scale-110"
+											: "bg-zinc-900 text-zinc-500 border border-zinc-800 ring-2 ring-background"
+									}`}
 								>
 									{phaseNum < currentPhase ? (
 										<span className="text-white">✓</span>

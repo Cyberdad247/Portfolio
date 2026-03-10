@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import {
 	Activity,
 	BarChart3,
@@ -18,6 +17,7 @@ import {
 	Share2,
 	TrendingUp,
 } from "lucide-react";
+import Link from "next/link";
 
 const services = [
 	{
@@ -174,7 +174,7 @@ export default function ServicesSection() {
 						href="/services"
 						className="inline-flex items-center gap-3 rounded-full bg-primary/10 border border-primary/20 px-8 py-4 text-sm font-bold text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
 					>
-						EXPLORE AGENTIC OS TIERS // 2026
+						EXPLORE AGENTIC OS TIERS {"//"} 2026
 						<span>→</span>
 					</Link>
 				</motion.div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Search, Globe, LineChart, BarChart2, Zap, Target, Layout, Database } from "lucide-react";
+import { Globe, Search, Zap } from "lucide-react";
 import { AmbientGlow } from "@/components/ui/ambient-glow";
 
 const glassCard =
@@ -28,9 +28,9 @@ export default function SEOGEOPage() {
 						Visibility <span className="text-primary">Evolved</span>
 					</h1>
 					<p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-						Traditional search is dead. We combine classic SEO with 
-						Generative Engine Optimization (GEO) to ensure your brand is the 
-						definitive answer for both humans and AI.
+						Traditional search is dead. We combine classic SEO with Generative
+						Engine Optimization (GEO) to ensure your brand is the definitive
+						answer for both humans and AI.
 					</p>
 				</motion.div>
 
@@ -50,9 +50,13 @@ export default function SEOGEOPage() {
 								"Neural-semantic keyword mapping",
 								"Contextual backlink orchestration",
 								"Core Web Vitals kinetic tuning",
-								"Entity-based schema architecture"
-							].map((item, i) => (
-								<li key={i} className="flex items-center gap-3 text-muted-foreground">
+								"Entity-based schema architecture",
+							].map((item) => (
+								<li
+									key={item}
+									className="flex items-center gap-3 text-muted-foreground"
+								>
+									{" "}
 									<Zap className="w-3 h-3 text-primary" />
 									{item}
 								</li>
@@ -75,9 +79,13 @@ export default function SEOGEOPage() {
 								"LLM citation-probability modeling",
 								"Generative search result shadowing",
 								"AI-answer engine data priming",
-								"RAG-compliant documentation stores"
-							].map((item, i) => (
-								<li key={i} className="flex items-center gap-3 text-muted-foreground">
+								"RAG-compliant documentation stores",
+							].map((item) => (
+								<li
+									key={item}
+									className="flex items-center gap-3 text-muted-foreground"
+								>
+									{" "}
 									<Zap className="w-3 h-3 text-secondary" />
 									{item}
 								</li>
@@ -95,17 +103,25 @@ export default function SEOGEOPage() {
 				>
 					<div className="flex flex-col md:flex-row justify-between items-center gap-8">
 						<div>
-							<h4 className="text-xl font-bold text-white mb-2">Real-time Visibility Index</h4>
-							<p className="text-sm text-muted-foreground">Monitoring 50,000+ generative nodes and search queries.</p>
+							<h4 className="text-xl font-bold text-white mb-2">
+								Real-time Visibility Index
+							</h4>
+							<p className="text-sm text-muted-foreground">
+								Monitoring 50,000+ generative nodes and search queries.
+							</p>
 						</div>
 						<div className="flex gap-12">
 							<div className="text-center">
 								<p className="text-3xl font-bold text-primary">98.2%</p>
-								<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Search Authority</p>
+								<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+									Search Authority
+								</p>
 							</div>
 							<div className="text-center">
 								<p className="text-3xl font-bold text-secondary">84.5%</p>
-								<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">AI Citation Rate</p>
+								<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+									AI Citation Rate
+								</p>
 							</div>
 						</div>
 					</div>

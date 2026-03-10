@@ -23,10 +23,13 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { agents as staticAgents, AgentConfig } from "@/config/agents.config";
+import {
+	type AgentConfig,
+	agents as staticAgents,
+} from "@/config/agents.config";
 import { siteConfig } from "@/config/site";
 import type { NexusEvent } from "@/lib/nexus-sync";
-import { liveFeedLog as staticFeed, performanceData } from "./dashboard/data";
+import { performanceData, liveFeedLog as staticFeed } from "./dashboard/data";
 import { StatusBadge } from "./dashboard/status-badge";
 
 const glassCard =
@@ -71,16 +74,19 @@ export default function AgenticDashboard(): JSX.Element {
 				if (response.ok) {
 					const data = await response.json();
 					const liveAgents = data.fleet || [];
-					
+
 					// Merge live status with static visual configuration
-					setAgents((prev) => 
+					setAgents((prev) =>
 						prev.map((agent) => {
-							const liveMatch = liveAgents.find((la: any) => la.id === agent.id);
-							if (liveMatch && liveMatch.status) {
+							const liveMatch = liveAgents.find(
+								(la: { id: string; status?: AgentConfig["status"] }) =>
+									la.id === agent.id,
+							);
+							if (liveMatch?.status) {
 								return { ...agent, status: liveMatch.status };
 							}
 							return agent;
-						})
+						}),
 					);
 				}
 			} catch (error) {
@@ -378,7 +384,7 @@ export default function AgenticDashboard(): JSX.Element {
 						<div className="relative flex-1 overflow-y-auto pr-2">
 							<div className="absolute bottom-2 left-[19px] top-2 w-px bg-border" />
 							<AnimatePresence mode="popLayout">
-								{allLogs.map((log, index) => (
+								{allLogs.map((log, _index) => (
 									<motion.div
 										key={log.id}
 										initial={{ opacity: 0, x: -20 }}

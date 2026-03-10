@@ -3,7 +3,7 @@ import {
 	Bug,
 	Code,
 	Globe,
-	LucideIcon,
+	type LucideIcon,
 	MessageSquare,
 	Search,
 	ShieldAlert,

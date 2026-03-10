@@ -28,7 +28,10 @@ const itemVariants = {
 
 export default function InvisionedHero() {
 	return (
-		<section id="hero" className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-white text-zinc-900">
+		<section
+			id="hero"
+			className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-white text-zinc-900"
+		>
 			{/* VIDEO LAYER */}
 			<div className="absolute inset-0 z-0">
 				<video

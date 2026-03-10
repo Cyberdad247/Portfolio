@@ -24,3 +24,7 @@
   2. `lint:strict` (biome)
   3. `build` (next)
 - Successful runs deploy instantly to **<https://invisionedmarketing.vercel.app>**
+
+## Production Setup
+
+- Supabase auth and tenancy setup: [docs/production/supabase-auth-tenancy.md](/Users/Invis/Downloads/Portfolio/docs/production/supabase-auth-tenancy.md)

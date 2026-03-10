@@ -90,7 +90,7 @@ export function LadyReceptionAvatar({
 					variant="outline"
 					className="mt-4 bg-rose-500/5 text-rose-400 border-rose-500/20 font-mono text-[10px] py-0"
 				>
-					{"PHASE_" + currentPhase + "_READY"}
+					{`PHASE_${currentPhase}_READY`}
 				</Badge>
 			</CardHeader>
 

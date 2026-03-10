@@ -1,21 +1,38 @@
 import asyncio
 import logging
-from typing import Any, Dict
+from typing import Awaitable, Callable, Dict
 from apps.camelot.schemas.objective import CampaignState, StatePacket, ObjectiveEnvelope
 
 logger = logging.getLogger(__name__)
 
+PacketCreatedHook = Callable[[str, StatePacket], Awaitable[object]]
+PacketUpdatedHook = Callable[[str, StatePacket, str], Awaitable[object]]
+
+
 class CamelotOrchestrator:
     """The Sovereign Orchestrator core implementing the S.I.T. loop."""
     
-    def __init__(self):
+    def __init__(
+        self,
+        on_packet_created: PacketCreatedHook | None = None,
+        on_packet_updated: PacketUpdatedHook | None = None,
+    ):
         self.state_packets: Dict[str, StatePacket] = {}
+        self.on_packet_created = on_packet_created
+        self.on_packet_updated = on_packet_updated
 
-    async def initiate_objective(self, envelope: ObjectiveEnvelope) -> str:
+    async def initiate_objective(
+        self,
+        envelope: ObjectiveEnvelope,
+        packet_id: str | None = None,
+    ) -> str:
         """Initialize the S.I.T. loop for a new marketing objective."""
-        packet_id = f"OBJ_{id(envelope)}"
+        packet_id = packet_id or f"OBJ_{id(envelope)}"
         packet = StatePacket(state=CampaignState.SENSE, envelope=envelope)
         self.state_packets[packet_id] = packet
+
+        if self.on_packet_created:
+            await self.on_packet_created(packet_id, packet)
         
         # Start the loop asynchronously
         asyncio.create_task(self.run_loop(packet_id))
@@ -30,25 +47,39 @@ class CamelotOrchestrator:
                 if packet.state == CampaignState.SENSE:
                     await self.handle_sense(packet)
                     packet.state = CampaignState.THINK
+                    await self._notify_update(packet_id, packet, "sense_completed")
                 
                 elif packet.state == CampaignState.THINK:
                     await self.handle_think(packet)
                     packet.state = CampaignState.TRIAGE
+                    await self._notify_update(packet_id, packet, "think_completed")
                 
                 elif packet.state == CampaignState.TRIAGE:
                     await self.handle_triage(packet)
                     packet.state = CampaignState.MERGE
+                    await self._notify_update(packet_id, packet, "triage_completed")
                 
                 elif packet.state == CampaignState.MERGE:
                     await self.handle_merge(packet)
                     packet.state = CampaignState.COMPLETE
+                    await self._notify_update(packet_id, packet, "merge_completed")
                 
                 logger.info(f"Packet {packet_id} transitioned to {packet.state}")
                 
         except Exception as e:
             packet.state = CampaignState.BLOCKED
             packet.flags.append(f"ERROR: {str(e)}")
+            await self._notify_update(packet_id, packet, "workflow_blocked")
             logger.error(f"S.I.T. loop failed for {packet_id}: {e}")
+
+    async def _notify_update(
+        self,
+        packet_id: str,
+        packet: StatePacket,
+        event: str,
+    ) -> None:
+        if self.on_packet_updated:
+            await self.on_packet_updated(packet_id, packet, event)
 
     async def handle_sense(self, packet: StatePacket):
         """Audit current site, inspect funnel, gather competitor signals."""

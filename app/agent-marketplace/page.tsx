@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShoppingCart, Zap, Star, ShieldCheck, Cpu } from "lucide-react";
+import { Cpu, ShieldCheck, ShoppingCart, Star, Zap } from "lucide-react";
 import { AmbientGlow } from "@/components/ui/ambient-glow";
 import { agents } from "@/config/agents.config";
 
@@ -10,7 +10,11 @@ const glassCard =
 
 export default function AgentMarketplacePage() {
 	// Filter for non-core agents or specialized ones
-	const marketplaceAgents = agents.filter(a => a.id.startsWith("M-") || !a.name.includes("(PLAN)") && !a.name.includes("(CODE)"));
+	const marketplaceAgents = agents.filter(
+		(a) =>
+			a.id.startsWith("M-") ||
+			(!a.name.includes("(PLAN)") && !a.name.includes("(CODE)")),
+	);
 
 	return (
 		<main className="relative min-h-screen bg-background pt-32 pb-24 px-4 md:px-8 overflow-hidden">
@@ -32,8 +36,9 @@ export default function AgentMarketplacePage() {
 						Expand Your <span className="text-primary">Intelligence</span>
 					</h1>
 					<p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-						Deploy specialized AI agents to automate high-fidelity marketing workflows. 
-						Select from our pre-trained fleet or request a custom build.
+						Deploy specialized AI agents to automate high-fidelity marketing
+						workflows. Select from our pre-trained fleet or request a custom
+						build.
 					</p>
 				</motion.div>
 
@@ -56,8 +61,12 @@ export default function AgentMarketplacePage() {
 								</div>
 							</div>
 
-							<h3 className="text-xl font-bold text-white mb-2">{agent.name}</h3>
-							<p className="text-sm text-primary font-medium mb-4">{agent.role}</p>
+							<h3 className="text-xl font-bold text-white mb-2">
+								{agent.name}
+							</h3>
+							<p className="text-sm text-primary font-medium mb-4">
+								{agent.role}
+							</p>
 							<p className="text-sm text-muted-foreground mb-6 line-clamp-3">
 								{agent.description}
 							</p>
@@ -77,7 +86,10 @@ export default function AgentMarketplacePage() {
 								</div>
 							</div>
 
-							<button className="w-full py-3 px-4 rounded-xl bg-primary text-primary-foreground font-bold text-sm transition-all hover:brightness-110 active:scale-[0.98]">
+							<button
+								type="button"
+								className="w-full py-3 px-4 rounded-xl bg-primary text-primary-foreground font-bold text-sm transition-all hover:brightness-110 active:scale-[0.98]"
+							>
 								Acquire License
 							</button>
 						</motion.div>

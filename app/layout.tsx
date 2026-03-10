@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
 import { siteConfig } from "@/config/site";
 
 const inter = Inter({
@@ -66,6 +66,7 @@ export default function RootLayout({
 			>
 				<script
 					type="application/ld+json"
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD schema is safe as it is generated from static data
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
 				/>
 				<Navbar />

@@ -1,5 +1,3 @@
-import { BrainCircuit, Globe, MessageSquare, Search } from "lucide-react";
-
 export const performanceData = [
 	{ name: "Mon", tasks: 400, insights: 240 },
 	{ name: "Tue", tasks: 300, insights: 139 },

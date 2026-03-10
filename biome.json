@@ -7,6 +7,22 @@
 		"enabled": true,
 		"indentStyle": "tab"
 	},
+	"javascript": {
+		"formatter": {
+			"indentStyle": "tab"
+		}
+	},
+	"css": {
+		"parser": {
+			"allowWrongLineComments": true,
+			"cssModules": true,
+			"tailwindDirectives": true
+		},
+		"formatter": {
+			"enabled": true,
+			"indentStyle": "tab"
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {

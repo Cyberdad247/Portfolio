@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
-import { siteConfig } from "@/config/site";
-import { services } from "@/config/services.config";
 import { caseStudies } from "@/config/case-studies.config";
+import { services } from "@/config/services.config";
+import { siteConfig } from "@/config/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
 	const baseUrl = siteConfig.url;

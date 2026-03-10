@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Cpu, Terminal, ShieldCheck, Bug, Search, MessageSquare, Globe, BrainCircuit } from "lucide-react";
+import { Cpu } from "lucide-react";
+import { useEffect, useState } from "react";
 import { AmbientGlow } from "@/components/ui/ambient-glow";
-import { agents as staticAgents, AgentConfig } from "@/config/agents.config";
+import {
+	type AgentConfig,
+	agents as staticAgents,
+} from "@/config/agents.config";
 
 const glassCard =
 	"rounded-2xl border border-border bg-card p-8 backdrop-blur-md relative overflow-hidden group";
@@ -19,16 +22,19 @@ export default function AIAgentsPage() {
 				if (response.ok) {
 					const data = await response.json();
 					const liveAgents = data.fleet || [];
-					
+
 					// Merge live status with static visual configuration
-					setAgents((prev) => 
+					setAgents((prev) =>
 						prev.map((agent) => {
-							const liveMatch = liveAgents.find((la: any) => la.id === agent.id);
-							if (liveMatch && liveMatch.status) {
+							const liveMatch = liveAgents.find(
+								(la: { id: string; status?: AgentConfig["status"] }) =>
+									la.id === agent.id,
+							);
+							if (liveMatch?.status) {
 								return { ...agent, status: liveMatch.status };
 							}
 							return agent;
-						})
+						}),
 					);
 				}
 			} catch (error) {
@@ -59,11 +65,13 @@ export default function AIAgentsPage() {
 						<span>The HIVE Fleet</span>
 					</div>
 					<h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 tracking-tight">
-						Autonomous <span className="text-secondary">Intelligence</span> System
+						Autonomous <span className="text-secondary">Intelligence</span>{" "}
+						System
 					</h1>
 					<p className="max-w-2xl text-lg text-muted-foreground">
-						A deep-dive into the specialized neural architectures that power your marketing operations.
-						Each agent is built on a custom kinetic stack for maximum fidelity.
+						A deep-dive into the specialized neural architectures that power
+						your marketing operations. Each agent is built on a custom kinetic
+						stack for maximum fidelity.
 					</p>
 				</motion.div>
 
@@ -86,37 +94,55 @@ export default function AIAgentsPage() {
 
 								<div className="md:col-span-7">
 									<div className="flex items-center gap-3 mb-2">
-										<h3 className="text-2xl font-bold text-white">{agent.name}</h3>
-										<span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest ${
-											agent.status === 'active' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 
-											agent.status === 'processing' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
-											'bg-zinc-500/20 text-zinc-400 border border-zinc-500/30'
-										}`}>
+										<h3 className="text-2xl font-bold text-white">
+											{agent.name}
+										</h3>
+										<span
+											className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest ${
+												agent.status === "active"
+													? "bg-green-500/20 text-green-400 border border-green-500/30"
+													: agent.status === "processing"
+														? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+														: "bg-zinc-500/20 text-zinc-400 border border-zinc-500/30"
+											}`}
+										>
 											{agent.status}
 										</span>
 									</div>
-									<p className="text-primary text-sm font-medium mb-4 uppercase tracking-widest">{agent.role}</p>
+									<p className="text-primary text-sm font-medium mb-4 uppercase tracking-widest">
+										{agent.role}
+									</p>
 									<p className="text-muted-foreground leading-relaxed">
 										{agent.description}
 									</p>
 								</div>
 
 								<div className="md:col-span-4 bg-background/50 rounded-xl p-6 border border-border/50">
-									<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Metric Profile</p>
+									<p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">
+										Metric Profile
+									</p>
 									<div className="space-y-4">
 										<div>
-											<p className="text-2xl font-bold text-secondary">{agent.metricValue}</p>
-											<p className="text-xs text-muted-foreground">{agent.metricLabel}</p>
+											<p className="text-2xl font-bold text-secondary">
+												{agent.metricValue}
+											</p>
+											<p className="text-xs text-muted-foreground">
+												{agent.metricLabel}
+											</p>
 										</div>
 										<div className="h-1 w-full bg-secondary/10 rounded-full overflow-hidden">
-											<motion.div 
+											<motion.div
 												initial={{ width: 0 }}
 												whileInView={{ width: "70%" }}
 												transition={{ duration: 1, delay: 0.5 }}
 												className="h-full bg-secondary"
 											/>
 										</div>
-										<button className="text-xs font-bold text-primary hover:text-white transition-colors uppercase tracking-widest">
+										<button
+											type="button"
+											className="text-xs font-bold text-primary hover:text-white transition-colors uppercase tracking-widest"
+										>
+											{" "}
 											View Intelligence Log →
 										</button>
 									</div>
