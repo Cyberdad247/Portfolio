@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { siteConfig } from "@/config/site";
+
 const navLinks = [
 	{ label: "Solutions", href: "/services" },
 	{ label: "Deep Dive", href: "/deep-dive/top-us-digital-marketing-agencies" },
@@ -38,11 +40,11 @@ export default function Navbar() {
 				{/* Brand */}
 				<Link href="/#hero" className="flex items-center gap-3">
 					<Image
-						src="/images/seal.jpg"
-						alt="Invisioned seal"
+						src={siteConfig.logo}
+						alt="Invisioned logo"
 						width={36}
 						height={36}
-						className="h-9 w-9 rounded-full object-cover"
+						className="h-9 w-9 object-contain invert dark:invert-0"
 					/>
 					<span
 						className={`text-lg font-bold uppercase tracking-tighter transition-colors duration-400 ${scrolled ? "text-white" : "text-zinc-900"

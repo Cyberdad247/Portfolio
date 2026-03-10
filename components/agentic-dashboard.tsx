@@ -24,6 +24,7 @@ import {
 	YAxis,
 } from "recharts";
 import { agents } from "@/config/agents.config";
+import { siteConfig } from "@/config/site";
 import type { NexusEvent } from "@/lib/nexus-sync";
 import { liveFeedLog as staticFeed, performanceData } from "./dashboard/data";
 import { StatusBadge } from "./dashboard/status-badge";
@@ -101,11 +102,11 @@ export default function AgenticDashboard(): JSX.Element {
 					<div className="flex items-center gap-4">
 						<div className="relative h-12 w-12 shrink-0">
 							<Image
-								src="/images/seal.jpg"
-								alt="Invisioned Seal"
+								src={siteConfig.logo}
+								alt="Invisioned Logo"
 								width={48}
 								height={48}
-								className="h-full w-full rounded-full object-cover opacity-80"
+								className="h-full w-full object-contain opacity-80 invert dark:invert-0"
 							/>
 							<div className="absolute inset-0 rounded-full bg-primary/30 blur-xl" />
 						</div>
