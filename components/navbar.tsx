@@ -9,8 +9,9 @@ import { siteConfig } from "@/config/site";
 
 const navLinks = [
 	{ label: "Solutions", href: "/services" },
-	{ label: "Deep Dive", href: "/deep-dive/top-us-digital-marketing-agencies" },
-	{ label: "Agentic Data", href: "/#dashboard" },
+	{ label: "Marketplace", href: "/agent-marketplace" },
+	{ label: "Audit", href: "/audit" },
+	{ label: "Mission Control", href: "/dashboard" },
 ];
 
 export default function Navbar() {

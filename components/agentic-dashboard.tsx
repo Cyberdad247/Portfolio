@@ -23,7 +23,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { agents } from "@/config/agents.config";
+import { agents as staticAgents, AgentConfig } from "@/config/agents.config";
 import { siteConfig } from "@/config/site";
 import type { NexusEvent } from "@/lib/nexus-sync";
 import { liveFeedLog as staticFeed, performanceData } from "./dashboard/data";
@@ -35,6 +35,7 @@ const glassCard =
 export default function AgenticDashboard(): JSX.Element {
 	const [currentTime, setCurrentTime] = useState<string>("");
 	const [dynamicLogs, setDynamicLogs] = useState<NexusEvent[]>([]);
+	const [agents, setAgents] = useState<AgentConfig[]>(staticAgents);
 
 	useEffect(() => {
 		setCurrentTime(new Date().toLocaleTimeString());
@@ -61,6 +62,36 @@ export default function AgenticDashboard(): JSX.Element {
 			clearInterval(timer);
 			window.removeEventListener("nexus-dashboard-sync", handleEvent);
 		};
+	}, []);
+
+	useEffect(() => {
+		async function fetchAgentStatus() {
+			try {
+				const response = await fetch("/api/v1/agents");
+				if (response.ok) {
+					const data = await response.json();
+					const liveAgents = data.fleet || [];
+					
+					// Merge live status with static visual configuration
+					setAgents((prev) => 
+						prev.map((agent) => {
+							const liveMatch = liveAgents.find((la: any) => la.id === agent.id);
+							if (liveMatch && liveMatch.status) {
+								return { ...agent, status: liveMatch.status };
+							}
+							return agent;
+						})
+					);
+				}
+			} catch (error) {
+				console.error("Failed to fetch live agent status:", error);
+			}
+		}
+
+		fetchAgentStatus();
+		// Poll every 10 seconds for live updates
+		const interval = setInterval(fetchAgentStatus, 10000);
+		return () => clearInterval(interval);
 	}, []);
 
 	const allLogs = [...dynamicLogs, ...staticFeed].slice(0, 10);

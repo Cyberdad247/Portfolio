@@ -1,14 +1,47 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Cpu, Terminal, ShieldCheck, Bug, Search, MessageSquare, Globe, BrainCircuit } from "lucide-react";
 import { AmbientGlow } from "@/components/ui/ambient-glow";
-import { agents } from "@/config/agents.config";
+import { agents as staticAgents, AgentConfig } from "@/config/agents.config";
 
 const glassCard =
 	"rounded-2xl border border-border bg-card p-8 backdrop-blur-md relative overflow-hidden group";
 
 export default function AIAgentsPage() {
+	const [agents, setAgents] = useState<AgentConfig[]>(staticAgents);
+
+	useEffect(() => {
+		async function fetchAgentStatus() {
+			try {
+				const response = await fetch("/api/v1/agents");
+				if (response.ok) {
+					const data = await response.json();
+					const liveAgents = data.fleet || [];
+					
+					// Merge live status with static visual configuration
+					setAgents((prev) => 
+						prev.map((agent) => {
+							const liveMatch = liveAgents.find((la: any) => la.id === agent.id);
+							if (liveMatch && liveMatch.status) {
+								return { ...agent, status: liveMatch.status };
+							}
+							return agent;
+						})
+					);
+				}
+			} catch (error) {
+				console.error("Failed to fetch live agent status:", error);
+			}
+		}
+
+		fetchAgentStatus();
+		// Poll every 10 seconds for live updates
+		const interval = setInterval(fetchAgentStatus, 10000);
+		return () => clearInterval(interval);
+	}, []);
+
 	return (
 		<main className="relative min-h-screen bg-background pt-32 pb-24 px-4 md:px-8 overflow-hidden">
 			<AmbientGlow color="bg-secondary/10" position="top-left" />
