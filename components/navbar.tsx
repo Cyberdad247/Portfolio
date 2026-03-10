@@ -44,7 +44,7 @@ export default function Navbar() {
 						alt="Invisioned logo"
 						width={36}
 						height={36}
-						className="h-9 w-9 object-contain invert dark:invert-0"
+						className="h-9 w-9 object-contain"
 					/>
 					<span
 						className={`text-lg font-bold uppercase tracking-tighter transition-colors duration-400 ${scrolled ? "text-white" : "text-zinc-900"

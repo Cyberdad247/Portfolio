@@ -106,7 +106,7 @@ export default function AgenticDashboard(): JSX.Element {
 								alt="Invisioned Logo"
 								width={48}
 								height={48}
-								className="h-full w-full object-contain opacity-80 invert dark:invert-0"
+								className="h-full w-full object-contain opacity-80"
 							/>
 							<div className="absolute inset-0 rounded-full bg-primary/30 blur-xl" />
 						</div>
