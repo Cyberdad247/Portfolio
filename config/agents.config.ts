@@ -110,4 +110,37 @@ export const agents: AgentConfig[] = [
 			"Executes automated tests in isolated sandboxes and oversees branch-revert protocols.",
 		icon: Bug,
 	},
+	{
+		id: "M-01",
+		name: "SEO Agent",
+		role: "Organic Growth",
+		status: "active",
+		metricLabel: "Keywords Ranked",
+		metricValue: "250+",
+		description:
+			"Automates keyword research, on-page optimization, and backlink monitoring.",
+		icon: Search,
+	},
+	{
+		id: "M-02",
+		name: "Content Agent",
+		role: "Narrative Strategy",
+		status: "active",
+		metricLabel: "Articles Generated",
+		metricValue: "50+",
+		description:
+			"Generates SEO-optimized articles and social media copy based on trending topics.",
+		icon: MessageSquare,
+	},
+	{
+		id: "M-03",
+		name: "Social Agent",
+		role: "Community Engagement",
+		status: "active",
+		metricLabel: "Engagements / Day",
+		metricValue: "1,200",
+		description:
+			"Manages multi-channel social presence and automates high-fidelity responses.",
+		icon: Globe,
+	},
 ];

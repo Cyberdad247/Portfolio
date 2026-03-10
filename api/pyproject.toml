@@ -1,0 +1,14 @@
+
+[project]
+name = "invisioned-api"
+version = "0.1.0"
+dependencies = [
+ "fastapi",
+ "uvicorn[standard]",
+ "pydantic",
+ "httpx"
+]
+
+[build-system]
+requires = ["setuptools","wheel"]
+build-backend = "setuptools.build_meta"
