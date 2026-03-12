@@ -34,3 +34,11 @@ export interface OnboardingData {
 	timeline: string;
 	additionalNotes: string;
 }
+
+export interface OnboardingTranscriptEvent {
+	transcript: string;
+	phase: PhaseType;
+	capturedFields: string[];
+	capturedValues: Partial<OnboardingData>;
+	createdAt: string;
+}

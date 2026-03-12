@@ -1,6 +1,6 @@
 "use client";
 
-import { Mic, User } from "lucide-react";
+import { Mic, PauseCircle, User, Volume2, VolumeX, Waves } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,15 @@ interface LadyReceptionAvatarProps {
 	phase: PhaseData;
 	isRecording: boolean;
 	isThinking?: boolean;
+	isSpeaking?: boolean;
+	isVoiceInputSupported?: boolean;
+	isVoiceOutputSupported?: boolean;
+	interimTranscript?: string;
+	lastTranscript?: string;
+	voiceError?: string | null;
 	onToggleRecording: () => void;
+	onReplayMessage?: () => void;
+	onStopSpeaking?: () => void;
 }
 
 export function LadyReceptionAvatar({
@@ -25,7 +33,15 @@ export function LadyReceptionAvatar({
 	phase,
 	isRecording,
 	isThinking = false,
+	isSpeaking = false,
+	isVoiceInputSupported = false,
+	isVoiceOutputSupported = false,
+	interimTranscript = "",
+	lastTranscript = "",
+	voiceError = null,
 	onToggleRecording,
+	onReplayMessage,
+	onStopSpeaking,
 }: LadyReceptionAvatarProps) {
 	const PhaseIcon = phase.icon;
 
@@ -122,22 +138,79 @@ export function LadyReceptionAvatar({
 					</div>
 				</div>
 
-				{/* Voice Input Button (L2 Kinetic) */}
-				<Button
-					variant="ghost"
-					className={`w-full h-12 rounded-xl border border-border/50 bg-white/[0.03] text-zinc-400 hover:bg-white/[0.08] hover:text-white transition-all duration-300 relative overflow-hidden group/btn`}
-					onClick={onToggleRecording}
-				>
-					{isRecording && (
-						<div className="absolute inset-0 bg-rose-500/10 animate-pulse" />
+				<div className="grid grid-cols-2 gap-3 text-[10px] uppercase tracking-[0.2em] font-mono">
+					<Badge
+						variant="outline"
+						className="justify-center border-white/10 bg-white/[0.03] py-2 text-zinc-300"
+					>
+						<Mic className="mr-2 h-3 w-3" />
+						{isVoiceInputSupported ? "STT Ready" : "STT Unavailable"}
+					</Badge>
+					<Badge
+						variant="outline"
+						className="justify-center border-white/10 bg-white/[0.03] py-2 text-zinc-300"
+					>
+						<Waves className="mr-2 h-3 w-3" />
+						{isVoiceOutputSupported ? "TTS Ready" : "TTS Unavailable"}
+					</Badge>
+				</div>
+
+				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+					<Button
+						type="button"
+						variant="ghost"
+						disabled={!isVoiceInputSupported}
+						className="relative h-12 overflow-hidden rounded-xl border border-border/50 bg-white/[0.03] text-zinc-400 transition-all duration-300 hover:bg-white/[0.08] hover:text-white"
+						onClick={onToggleRecording}
+					>
+						{isRecording ? (
+							<div className="absolute inset-0 animate-pulse bg-rose-500/10" />
+						) : null}
+						<Mic
+							className={`mr-3 h-4 w-4 transition-colors ${isRecording ? "text-rose-500" : "text-zinc-400"}`}
+						/>
+						<span className="font-mono text-[10px] uppercase tracking-[0.2em]">
+							{isRecording ? "Listening..." : "Start Voice Input"}
+						</span>
+					</Button>
+					<Button
+						type="button"
+						variant="ghost"
+						disabled={!isVoiceOutputSupported}
+						className="h-12 rounded-xl border border-border/50 bg-white/[0.03] text-zinc-400 transition-all duration-300 hover:bg-white/[0.08] hover:text-white"
+						onClick={isSpeaking ? onStopSpeaking : onReplayMessage}
+					>
+						{isSpeaking ? (
+							<PauseCircle className="mr-3 h-4 w-4 text-amber-400" />
+						) : isVoiceOutputSupported ? (
+							<Volume2 className="mr-3 h-4 w-4" />
+						) : (
+							<VolumeX className="mr-3 h-4 w-4" />
+						)}
+						<span className="font-mono text-[10px] uppercase tracking-[0.2em]">
+							{isSpeaking ? "Stop Voice Output" : "Replay Prompt"}
+						</span>
+					</Button>
+				</div>
+
+				<div className="space-y-3 rounded-xl border border-white/5 bg-zinc-900/40 p-4">
+					<p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+						Live Transcript
+					</p>
+					<p className="min-h-10 text-sm leading-relaxed text-zinc-300">
+						{interimTranscript ||
+							lastTranscript ||
+							"Voice transcript will appear here."}
+					</p>
+					{voiceError ? (
+						<p className="text-xs text-rose-400">{voiceError}</p>
+					) : (
+						<p className="text-xs text-zinc-500">
+							Speak naturally. The receptionist will extract fields into the
+							active phase automatically.
+						</p>
 					)}
-					<Mic
-						className={`mr-3 h-4 w-4 transition-colors ${isRecording ? "text-rose-500" : "group-hover/btn:text-rose-400"}`}
-					/>
-					<span className="font-mono text-[10px] uppercase tracking-[0.2em]">
-						{isRecording ? "Listening to Signal..." : "Initiate Voice Comms"}
-					</span>
-				</Button>
+				</div>
 			</CardContent>
 		</Card>
 	);

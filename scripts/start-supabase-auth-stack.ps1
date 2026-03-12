@@ -34,7 +34,7 @@ function Invoke-SqlFile {
 	switch ($SupabaseMode) {
 		"cli" {
 			$sql = Get-Content -Raw $absolutePath
-			$sql | supabase db query
+			$sql | npx supabase@latest db query
 		}
 		"psql" {
 			if (-not $PostgresConnection) {
@@ -74,7 +74,7 @@ if (-not $SkipApi) {
 	Start-Process powershell -ArgumentList @(
 		"-NoExit",
 		"-Command",
-		"Set-Location '$repoRoot'; python -m uvicorn api.app.main:app --reload --host 127.0.0.1 --port 8000"
+		"Set-Location '$repoRoot'; `$env:PYTHONPATH='.;api'; python -m uvicorn api.app.main:app --reload --host 127.0.0.1 --port 8001"
 	) | Out-Null
 }
 
@@ -82,19 +82,19 @@ Write-Step "Local test URLs"
 Write-Host "Login:      http://localhost:3000/login"
 Write-Host "Dashboard:  http://localhost:3000/dashboard"
 Write-Host "Admin:      http://localhost:3000/admin"
-Write-Host "API root:   http://127.0.0.1:8000/"
+Write-Host "API root:   http://127.0.0.1:8001/"
 
 Write-Step "Example API calls"
 Write-Host @"
 Create workflow run:
-curl -X POST http://127.0.0.1:8000/api/v1/objectives/pitch `
+curl -X POST http://127.0.0.1:8001/api/v1/objectives/pitch `
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" `
   -H "Content-Type: application/json" `
   -d "{\"objective\":\"Launch Q2 growth push\",\"mode\":\"PITCH\",\"org_id\":\"YOUR_ORG_UUID\",\"context\":{}}"
 
 Fetch workflow status:
 curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" `
-  http://127.0.0.1:8000/api/v1/objectives/status/YOUR_WORKFLOW_RUN_ID
+  http://127.0.0.1:8001/api/v1/objectives/status/YOUR_WORKFLOW_RUN_ID
 "@
 
 Write-Step "Usage examples"

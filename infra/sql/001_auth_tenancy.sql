@@ -97,11 +97,33 @@ create table if not exists public.review_decisions (
   )
 );
 
+create table if not exists public.onboarding_sessions (
+  id uuid primary key default gen_random_uuid(),
+  organization_id uuid not null references public.organizations(id) on delete cascade,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  status text not null default 'draft',
+  current_phase smallint not null default 1,
+  form_data jsonb not null default '{}'::jsonb,
+  transcript_log jsonb not null default '[]'::jsonb,
+  source text not null default 'receptionist_web',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (organization_id, user_id),
+  constraint onboarding_sessions_status_check check (
+    status in ('draft', 'completed')
+  ),
+  constraint onboarding_sessions_phase_check check (
+    current_phase between 1 and 3
+  )
+);
+
 create index if not exists idx_org_members_user on public.organization_members(user_id);
 create index if not exists idx_org_members_org on public.organization_members(organization_id);
 create index if not exists idx_workflow_runs_org on public.workflow_runs(organization_id);
 create index if not exists idx_agent_runs_org on public.agent_runs(organization_id);
 create index if not exists idx_review_decisions_org on public.review_decisions(organization_id);
+create index if not exists idx_onboarding_sessions_org on public.onboarding_sessions(organization_id);
+create index if not exists idx_onboarding_sessions_user on public.onboarding_sessions(user_id);
 
 drop trigger if exists set_organizations_updated_at on public.organizations;
 create trigger set_organizations_updated_at
@@ -126,4 +148,9 @@ for each row execute procedure public.set_updated_at();
 drop trigger if exists set_workflow_runs_updated_at on public.workflow_runs;
 create trigger set_workflow_runs_updated_at
 before update on public.workflow_runs
+for each row execute procedure public.set_updated_at();
+
+drop trigger if exists set_onboarding_sessions_updated_at on public.onboarding_sessions;
+create trigger set_onboarding_sessions_updated_at
+before update on public.onboarding_sessions
 for each row execute procedure public.set_updated_at();

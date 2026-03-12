@@ -1,4 +1,9 @@
 from fastapi import FastAPI
+from dotenv import load_dotenv
+import os
+
+# Explicitly load from the directory where this script is or relative to CWD
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
 from app.api.v1.routes.agents import router as agents_router
 from app.api.v1.routes.audit import router as audit_router

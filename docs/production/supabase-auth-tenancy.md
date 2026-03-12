@@ -25,6 +25,9 @@ Frontend in `.env.local`:
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=REPLACE_WITH_PUBLISHABLE_OR_ANON_KEY
+LIVEKIT_URL=wss://YOUR_LIVEKIT_HOST
+LIVEKIT_API_KEY=REPLACE_WITH_LIVEKIT_API_KEY
+LIVEKIT_API_SECRET=REPLACE_WITH_LIVEKIT_API_SECRET
 ```
 
 Backend in `api/.env`:
@@ -54,7 +57,7 @@ Run these files in Supabase SQL Editor in order:
 
 What they do:
 
-- `001`: tables, indexes, updated-at triggers, active-membership constraint
+- `001`: tables, indexes, updated-at triggers, active-membership constraint, onboarding session persistence
 - `002`: profile creation trigger from `auth.users`
 - `003`: RLS helper functions using `SECURITY DEFINER`
 - `004`: rerunnable RLS policies with restricted membership role assignment
@@ -86,6 +89,40 @@ Expected behavior:
 - anonymous user visiting `/dashboard` or `/admin` is redirected to `/login`
 - signed-in user without org membership sees a no-access state on `/dashboard`
 - signed-in non-internal user visiting `/admin` is redirected to `/dashboard`
+
+## Automated Receptionist Flow
+
+The onboarding receptionist now includes:
+
+- browser STT via the Web Speech API
+- browser TTS via `speechSynthesis`
+- transcript-driven form autofill for the active phase
+- authenticated onboarding session persistence with transcript history
+- a LiveKit token route for later migration to full realtime voice rooms
+
+Implemented files:
+
+- `components/onboarding/onboarding-flow.tsx`
+- `components/onboarding/lady-reception-avatar.tsx`
+- `hooks/use-receptionist-voice.ts`
+- `lib/onboarding/voice-intake.ts`
+- `app/api/onboarding/session/route.ts`
+- `app/api/livekit/token/route.ts`
+- `lib/livekit/server.ts`
+
+Current behavior:
+
+- the receptionist can listen in supported browsers and extract spoken details into onboarding fields
+- the receptionist speaks phase prompts and extraction acknowledgements in supported browsers
+- the onboarding remains reviewable in the form UI rather than silently submitting unknown values
+- authenticated users with an active org membership resume their saved onboarding draft across sessions
+- `POST /api/livekit/token` issues a room join token for receptionist rooms prefixed with `receptionist-`
+
+Current limitations:
+
+- STT/TTS availability depends on browser support
+- extraction is heuristic, not LLM-based
+- LiveKit realtime room orchestration is not active yet; the token route is the integration boundary for that next step
 
 ## API Auth Flow
 

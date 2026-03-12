@@ -12,6 +12,8 @@ alter table public.agent_runs enable row level security;
 alter table public.agent_runs force row level security;
 alter table public.review_decisions enable row level security;
 alter table public.review_decisions force row level security;
+alter table public.onboarding_sessions enable row level security;
+alter table public.onboarding_sessions force row level security;
 
 drop policy if exists "profiles_select_policy" on public.profiles;
 create policy "profiles_select_policy"
@@ -165,4 +167,47 @@ using (
 )
 with check (
   public.is_internal_operator() or public.has_org_role(organization_id, array['client_admin'])
+);
+
+drop policy if exists "onboarding_sessions_select_policy" on public.onboarding_sessions;
+create policy "onboarding_sessions_select_policy"
+on public.onboarding_sessions
+for select
+using (
+  public.is_internal_operator()
+  or (
+    user_id = auth.uid()
+    and public.is_org_member(organization_id)
+  )
+);
+
+drop policy if exists "onboarding_sessions_insert_policy" on public.onboarding_sessions;
+create policy "onboarding_sessions_insert_policy"
+on public.onboarding_sessions
+for insert
+with check (
+  public.is_internal_operator()
+  or (
+    user_id = auth.uid()
+    and public.has_org_role(organization_id, array['client_admin', 'client_member'])
+  )
+);
+
+drop policy if exists "onboarding_sessions_update_policy" on public.onboarding_sessions;
+create policy "onboarding_sessions_update_policy"
+on public.onboarding_sessions
+for update
+using (
+  public.is_internal_operator()
+  or (
+    user_id = auth.uid()
+    and public.has_org_role(organization_id, array['client_admin', 'client_member'])
+  )
+)
+with check (
+  public.is_internal_operator()
+  or (
+    user_id = auth.uid()
+    and public.has_org_role(organization_id, array['client_admin', 'client_member'])
+  )
 );

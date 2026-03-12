@@ -25,7 +25,9 @@ export default function LoginForm({ next }: LoginFormProps) {
 			},
 		});
 
-		setMessage(error ? error.message : "Check your email for the sign-in link.");
+		setMessage(
+			error ? error.message : "Check your email for the sign-in link.",
+		);
 		setLoading(false);
 	};
 
