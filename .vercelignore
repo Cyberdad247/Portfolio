@@ -1,4 +1,6 @@
 api/
+!app/api/
+!app/api/**
 hive-engine/
 .git/
 .github/
