@@ -41,6 +41,7 @@ SUPABASE_JWT_SECRET=REPLACE_WITH_CURRENT_SUPABASE_JWT_SECRET
 Notes:
 
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` is safe for the browser when RLS is enabled correctly.
+- Vercel must define the same public variables exactly as `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` for middleware, login, and dashboard auth to work.
 - `SUPABASE_SERVICE_ROLE_KEY` must stay server-only.
 - `SUPABASE_JWT_SECRET` is required for symmetric JWT verification in the API.
 - If you use asymmetric signing in Supabase, the API can verify via JWKS instead of the JWT secret.
