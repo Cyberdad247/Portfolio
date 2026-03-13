@@ -29,6 +29,7 @@ import {
 } from "@/config/agents.config";
 import { siteConfig } from "@/config/site";
 import type { NexusEvent } from "@/lib/nexus-sync";
+import { createClient } from "@/lib/supabase/client";
 import { performanceData, liveFeedLog as staticFeed } from "./dashboard/data";
 import { StatusBadge } from "./dashboard/status-badge";
 
@@ -41,19 +42,76 @@ export default function AgenticDashboard(): JSX.Element {
 	const [agents, setAgents] = useState<AgentConfig[]>(staticAgents);
 
 	useEffect(() => {
+		const supabase = createClient();
+
 		setCurrentTime(new Date().toLocaleTimeString());
 		const timer = setInterval(
 			() => setCurrentTime(new Date().toLocaleTimeString()),
 			1000,
 		);
 
-		// Load initial nexus events
-		const saved = localStorage.getItem("NEXUS_DASHBOARD_EVENTS");
-		if (saved) {
-			setDynamicLogs(JSON.parse(saved));
+		// 1. Initial Data Fetch (L4 Semantic Layer)
+		async function fetchInitialLogs() {
+			const { data, error } = await supabase
+				.from("ukg_events")
+				.select("*")
+				.order("created_at", { ascending: false })
+				.limit(10);
+
+			if (data && !error) {
+				const mappedLogs: NexusEvent[] = data.map(
+					(event: {
+						id: string;
+						agent_id: string | null;
+						payload: { action?: string };
+						type: string;
+						created_at: string;
+					}) => ({
+						id: event.id,
+						agent: event.agent_id || "SYSTEM",
+						action: event.payload.action || `${event.type} event detected.`,
+						time: new Date(event.created_at).toLocaleTimeString([], {
+							hour: "2-digit",
+							minute: "2-digit",
+						}),
+					}),
+				);
+				setDynamicLogs(mappedLogs);
+			}
 		}
 
-		// Listen for real-time updates
+		fetchInitialLogs();
+
+		// 2. Real-Time Subscription (L5 Agentic Nexus)
+		const channel = supabase
+			.channel("ukg_live_feed")
+			.on(
+				"postgres_changes",
+				{ event: "INSERT", schema: "public", table: "ukg_events" },
+				(payload) => {
+					const newEvent = payload.new as {
+						id: string;
+						agent_id: string | null;
+						payload: { action?: string };
+						type: string;
+						created_at: string;
+					};
+					const mappedEvent: NexusEvent = {
+						id: newEvent.id,
+						agent: newEvent.agent_id || "SYSTEM",
+						action:
+							newEvent.payload.action || `${newEvent.type} event detected.`,
+						time: new Date(newEvent.created_at).toLocaleTimeString([], {
+							hour: "2-digit",
+							minute: "2-digit",
+						}),
+					};
+					setDynamicLogs((prev) => [mappedEvent, ...prev].slice(0, 10));
+				},
+			)
+			.subscribe();
+
+		// Legacy local event listener
 		const handleEvent = (e: Event) => {
 			const customEvent = e as CustomEvent<NexusEvent>;
 			setDynamicLogs((prev) => [customEvent.detail, ...prev].slice(0, 10));
@@ -63,6 +121,7 @@ export default function AgenticDashboard(): JSX.Element {
 
 		return () => {
 			clearInterval(timer);
+			supabase.removeChannel(channel);
 			window.removeEventListener("nexus-dashboard-sync", handleEvent);
 		};
 	}, []);

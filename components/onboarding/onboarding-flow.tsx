@@ -67,49 +67,128 @@ export function OnboardingFlow(): JSX.Element {
 		return `${phase.description}. I still need: ${unanswered.join(", ")}. You can speak naturally and I will capture what I can.`;
 	}, [formData, isThinking, phase]);
 
-	const handleVoiceTranscript = useCallback(
-		(transcript: string) => {
-			setLastTranscript(transcript);
+	const triggerAutonomousResearch = useCallback(
+		async (url: string) => {
+			if (isThinking) {
+				return;
+			}
 
-			const extraction = extractOnboardingFromTranscript(
-				transcript,
-				currentPhase,
-				formData,
-			);
+			setIsThinking(true);
+			emitNexusEvent({
+				agent: "A-01",
+				action: `Initiated Intelligence Scout for: ${url}`,
+			});
 
-			if (Object.keys(extraction.updates).length > 0) {
+			try {
+				const response = await fetch("/api/onboarding/research", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ url }),
+				});
+
+				if (!response.ok) throw new Error("Research Scout failure");
+
+				const data = await response.json();
+
 				setFormData((previous) => ({
 					...previous,
-					...extraction.updates,
+					company: previous.company || data.company,
+					industry: previous.industry || data.industry,
+					goals: previous.goals || data.goals,
 				}));
-				setTranscriptLog((previous) => [
-					...previous,
-					{
-						transcript,
-						phase: currentPhase,
-						capturedFields: Object.keys(extraction.updates),
-						capturedValues: extraction.updates,
-						createdAt: new Date().toISOString(),
-					},
-				]);
 
-				const summary =
-					extraction.summary.length > 0
-						? `I captured ${extraction.summary.join(", ")}.`
-						: "I captured new onboarding details.";
-
-				setVoiceAssistantMessage(summary);
 				emitNexusEvent({
-					agent: "A-04",
-					action: `Voice intake updated phase ${currentPhase}: ${summary}`,
+					agent: "A-02",
+					action: `Synthesized background report for ${data.company.toUpperCase()}.`,
 				});
-			} else {
-				const fallbackMessage =
-					"I heard you, but I could not confidently map that to the active fields. You can keep speaking or type the details manually.";
-				setVoiceAssistantMessage(fallbackMessage);
+			} catch (error) {
+				console.error("Intelligence Scout Failure:", error);
+				emitNexusEvent({
+					agent: "A-01",
+					action: `Intelligence Scout failed for ${url}. Manual intake required.`,
+				});
+			} finally {
+				setIsThinking(false);
 			}
 		},
-		[currentPhase, formData],
+		[isThinking],
+	);
+
+	const handleVoiceTranscript = useCallback(
+		async (transcript: string) => {
+			setLastTranscript(transcript);
+
+			if (isThinking) {
+				return;
+			}
+
+			setIsThinking(true);
+			emitNexusEvent({
+				agent: "A-04",
+				action: "Neural Voice Compiler is analyzing your input...",
+			});
+
+			try {
+				const response = await fetch("/api/onboarding/extract", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						transcript,
+						currentPhase,
+						currentData: formData,
+					}),
+				});
+
+				if (!response.ok) throw new Error("AI Extraction failed");
+
+				const extraction = await response.json();
+
+				if (Object.keys(extraction.updates).length > 0) {
+					setFormData((previous) => ({
+						...previous,
+						...extraction.updates,
+					}));
+					setTranscriptLog((previous) => [
+						...previous,
+						{
+							transcript,
+							phase: currentPhase,
+							capturedFields: Object.keys(extraction.updates),
+							capturedValues: extraction.updates,
+							createdAt: new Date().toISOString(),
+						},
+					]);
+
+					const summary =
+						extraction.summary.length > 0
+							? `I captured ${extraction.summary.join(", ")}.`
+							: "I captured new onboarding details.";
+
+					setVoiceAssistantMessage(summary);
+					emitNexusEvent({
+						agent: "A-04",
+						action: `AI Voice Compiler updated: ${summary}`,
+					});
+
+					// Trigger research if website is captured
+					if (extraction.updates.website) {
+						triggerAutonomousResearch(extraction.updates.website);
+					}
+				} else {
+					setVoiceAssistantMessage(
+						"I heard you, but I could not confidently map that to the active fields. You can keep speaking or provide more detail.",
+					);
+				}
+			} catch (error) {
+				console.error("Neural Extraction Failure:", error);
+				setVoiceAssistantMessage(
+					"My neural pathways are temporarily saturated. Please try speaking again or use manual input.",
+				);
+			} finally {
+				setIsThinking(false);
+			}
+		},
+		[currentPhase, formData, isThinking, triggerAutonomousResearch],
 	);
 
 	const {
@@ -152,6 +231,7 @@ export function OnboardingFlow(): JSX.Element {
 		}
 	}, []);
 
+	// Keep as L1 Kinetic Cache
 	useEffect(() => {
 		localStorage.setItem(
 			"AOS_ONBOARDING_DATA",
@@ -277,50 +357,10 @@ export function OnboardingFlow(): JSX.Element {
 		};
 	}, [debouncedRemotePayload, isRemoteSessionLoading]);
 
-	const triggerAutonomousResearch = useCallback(
-		async (url: string) => {
-			if (isThinking) {
-				return;
-			}
-
-			setIsThinking(true);
-			emitNexusEvent({
-				agent: "A-01",
-				action: `Initiated Nano-Browser scan for: ${url}`,
-			});
-
-			await new Promise((resolve) => setTimeout(resolve, 3000));
-
-			const companyName = url
-				.replace("https://", "")
-				.replace("http://", "")
-				.replace("www.", "")
-				.split(".")[0];
-
-			setFormData((previous) => ({
-				...previous,
-				company:
-					previous.company ||
-					companyName.charAt(0).toUpperCase() + companyName.slice(1),
-				industry: previous.industry || "Technology",
-				goals:
-					previous.goals ||
-					"Accelerate growth and optimize digital presence via Agentic Nexus protocols.",
-			}));
-
-			emitNexusEvent({
-				agent: "A-02",
-				action: `Synthesized background report for ${companyName.toUpperCase()}. Industry: Technology.`,
-			});
-
-			setIsThinking(false);
-		},
-		[isThinking],
-	);
-
 	useEffect(() => {
 		if (
 			debouncedWebsite &&
+
 			debouncedWebsite.length > 8 &&
 			debouncedWebsite.includes(".")
 		) {
