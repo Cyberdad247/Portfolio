@@ -18,36 +18,47 @@ type OnboardingSessionPayload = {
 };
 
 async function requireOnboardingContext() {
-	const supabase = await createClient();
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
+	try {
+		const supabase = await createClient();
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
 
-	if (!user) {
-		return {
-			error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
-		};
-	}
+		if (authError || !user) {
+			return {
+				error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
+			};
+		}
 
-	const membership = await getActiveMembership(user.id);
-	const organizationId =
-		membership?.organization_id ||
-		(
-			membership?.organizations as {
-				id?: string;
-			} | null
-		)?.id;
+		const membership = await getActiveMembership(user.id);
+		const organizationId =
+			membership?.organization_id ||
+			(
+				membership?.organizations as {
+					id?: string;
+				} | null
+			)?.id;
 
-	if (!organizationId) {
+		if (!organizationId) {
+			return {
+				error: NextResponse.json(
+					{ error: "No active organization membership found" },
+					{ status: 403 },
+				),
+			};
+		}
+
+		return { supabase, user, organizationId };
+	} catch (error) {
+		console.error("Onboarding session auth failure:", error);
 		return {
 			error: NextResponse.json(
-				{ error: "No active organization membership found" },
-				{ status: 403 },
+				{ error: "Unable to establish onboarding session context" },
+				{ status: 500 },
 			),
 		};
 	}
-
-	return { supabase, user, organizationId };
 }
 
 export async function GET() {
@@ -67,6 +78,7 @@ export async function GET() {
 		.maybeSingle();
 
 	if (error) {
+		console.error("Onboarding session load failure:", error);
 		return NextResponse.json(
 			{ error: "Unable to load onboarding session" },
 			{ status: 500 },
@@ -122,6 +134,7 @@ export async function POST(request: Request) {
 		.single();
 
 	if (error) {
+		console.error("Onboarding session save failure:", error);
 		return NextResponse.json(
 			{ error: "Unable to save onboarding session" },
 			{ status: 500 },
