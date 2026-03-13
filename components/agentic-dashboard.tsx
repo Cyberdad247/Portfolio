@@ -29,7 +29,7 @@ import {
 } from "@/config/agents.config";
 import { siteConfig } from "@/config/site";
 import type { NexusEvent } from "@/lib/nexus-sync";
-import { createClient } from "@/lib/supabase/client";
+import { tryCreateClient } from "@/lib/supabase/client";
 import { performanceData, liveFeedLog as staticFeed } from "./dashboard/data";
 import { StatusBadge } from "./dashboard/status-badge";
 
@@ -40,15 +40,24 @@ export default function AgenticDashboard(): JSX.Element {
 	const [currentTime, setCurrentTime] = useState<string>("");
 	const [dynamicLogs, setDynamicLogs] = useState<NexusEvent[]>([]);
 	const [agents, setAgents] = useState<AgentConfig[]>(staticAgents);
+	const [isLiveFeedAvailable, setIsLiveFeedAvailable] = useState(true);
 
 	useEffect(() => {
-		const supabase = createClient();
-
 		setCurrentTime(new Date().toLocaleTimeString());
 		const timer = setInterval(
 			() => setCurrentTime(new Date().toLocaleTimeString()),
 			1000,
 		);
+		const browserSupabase = tryCreateClient();
+
+		if (!browserSupabase) {
+			setIsLiveFeedAvailable(false);
+			return () => {
+				clearInterval(timer);
+			};
+		}
+
+		const supabase = browserSupabase;
 
 		// 1. Initial Data Fetch (L4 Semantic Layer)
 		async function fetchInitialLogs() {
@@ -212,7 +221,9 @@ export default function AgenticDashboard(): JSX.Element {
 								{"Agentic Nexus // Dashboard"}
 							</h3>
 							<p className="font-mono text-sm text-muted-foreground">
-								{"Hello, Client User. System Status: OPTIMAL."}
+								{isLiveFeedAvailable
+									? "Hello, Client User. System Status: OPTIMAL."
+									: "Hello, Client User. Live telemetry is temporarily unavailable."}
 							</p>
 						</div>
 					</div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { tryCreateClient } from "@/lib/supabase/client";
 
 type LoginFormProps = {
 	next: string;
@@ -17,7 +17,13 @@ export default function LoginForm({ next }: LoginFormProps) {
 		setLoading(true);
 		setMessage("");
 
-		const supabase = createClient();
+		const supabase = tryCreateClient();
+		if (!supabase) {
+			setMessage("Authentication is temporarily unavailable.");
+			setLoading(false);
+			return;
+		}
+
 		const { error } = await supabase.auth.signInWithOtp({
 			email,
 			options: {

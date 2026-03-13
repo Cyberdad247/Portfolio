@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/client";
+import { tryCreateClient } from "@/lib/supabase/client";
 
 /**
  * UKG Logger (L4 Semantic Layer)
@@ -38,7 +38,10 @@ export const logToUKG = async (entry: Omit<UKGEntry, "timestamp" | "id">) => {
 
 	// 2. Sovereign Persistence (Supabase)
 	try {
-		const supabase = createClient();
+		const supabase = tryCreateClient();
+		if (!supabase) {
+			return;
+		}
 
 		// Attempt to get the current session if IDs weren't provided
 		const orgId = entry.organizationId;

@@ -6,3 +6,12 @@ export function createClient() {
 
 	return createBrowserClient(url, anonKey);
 }
+
+export function tryCreateClient() {
+	try {
+		return createClient();
+	} catch (error) {
+		console.error("Supabase browser client unavailable:", error);
+		return null;
+	}
+}
