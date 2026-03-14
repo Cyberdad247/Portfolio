@@ -26,6 +26,9 @@ async function requireOnboardingContext() {
 		} = await supabase.auth.getUser();
 
 		if (authError || !user) {
+			if (authError) {
+				console.warn("Onboarding session auth degraded:", authError);
+			}
 			return {
 				error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
 			};
@@ -51,12 +54,9 @@ async function requireOnboardingContext() {
 
 		return { supabase, user, organizationId };
 	} catch (error) {
-		console.error("Onboarding session auth failure:", error);
+		console.warn("Onboarding session context degraded:", error);
 		return {
-			error: NextResponse.json(
-				{ error: "Unable to establish onboarding session context" },
-				{ status: 500 },
-			),
+			error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
 		};
 	}
 }
