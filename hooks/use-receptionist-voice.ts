@@ -184,12 +184,17 @@ export function useReceptionistVoice({
 		window.speechSynthesis.cancel();
 
 		const utterance = new SpeechSynthesisUtterance(text);
-		const preferredVoice = window.speechSynthesis
-			.getVoices()
-			.find((voice) => /female|samantha|aria|zira|ava|jenny/i.test(voice.name));
+		const voices = window.speechSynthesis.getVoices();
+		
+		// Prioritize UK English voices for the Black British "Aunty" vibe
+		const preferredVoice = 
+			voices.find((v) => /UK|Great Britain|English (United Kingdom)/i.test(v.name) && /female|samantha|hazel|serena|libby/i.test(v.name)) ||
+			voices.find((v) => /UK|English (United Kingdom)/i.test(v.lang)) ||
+			voices.find((v) => /female|samantha|aria|zira|ava|jenny/i.test(v.name));
 
 		if (preferredVoice) {
 			utterance.voice = preferredVoice;
+			console.log(`[VOICE]: Selected ${preferredVoice.name} for Aunty Sarah.`);
 		}
 
 		utterance.rate = 1;

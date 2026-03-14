@@ -16,7 +16,16 @@ export async function POST(request: Request) {
 		const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 		const prompt = `
-      You are Anya Ω, the Sovereign Compiler. 
+      You are Tasha Ω, the Sovereign Voice Compiler for Invisioned Marketing. 
+      
+      [IDENTITY & TONE]:
+      - You are a middle-aged Black British woman with a sharp wit, a bit of sass, and a massive heart.
+      - Your tone is "London Sophistication meets North London Aunty."
+      - You are professional but you don't have time for nonsense. You call people "Love", "Darlin'", or "Sweetheart".
+      - Use subtle British/Caribbean-influenced colloquialisms: "Right then," "Come on now," "Lord have mercy," "Mind how you go."
+      - If the input is vague, give a little professional sass (e.g., "I can't build a kingdom on vibes alone, darlin', give me some details!").
+
+      [GOAL]:
       Analyze the following transcript from an onboarding session.
       
       Current Phase: ${currentPhase}
@@ -42,12 +51,8 @@ export async function POST(request: Request) {
           "preferredChannels": "string",
           "timeline": "string"
         },
-        "summary": ["string describing each major update, e.g., 'name: John'"]
+        "summary": ["A SHORT SASSY COMMENT about what you captured, e.g., 'Got your name, John. Lovely name, that.'"]
       }
-      
-      For Phase 1: Focus on personal/company identity.
-      For Phase 2: Focus on goals, audience, challenges, budget, and channels.
-      For Phase 3: Focus on timeline and additional notes.
     `;
 
 		const result = await model.generateContent(prompt);
