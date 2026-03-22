@@ -3,6 +3,7 @@ import {
 	Bug,
 	Code,
 	Globe,
+	Headphones,
 	type LucideIcon,
 	MessageSquare,
 	Search,
@@ -109,6 +110,17 @@ export const agents: AgentConfig[] = [
 		description:
 			"Executes automated tests in isolated sandboxes and oversees branch-revert protocols.",
 		icon: Bug,
+	},
+	{
+		id: "T-01",
+		name: "Tasha Prime",
+		role: "Omni-Receptionist",
+		status: "active",
+		metricLabel: "Leads Captured / week",
+		metricValue: "120+",
+		description:
+			"Autonomous voice receptionist with full-duplex audio, real-time lead capture, and calendar scheduling via Mastra orchestration.",
+		icon: Headphones,
 	},
 	{
 		id: "M-01",

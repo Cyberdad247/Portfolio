@@ -1,0 +1,45 @@
+model_list:
+  # Tier 1: Local Ollama (completely free, no API calls)
+  - model_name: "gemini-2.0-flash"
+    litellm_params:
+      model: "ollama/qwen3.5:4b"
+      api_base: "http://localhost:11434"
+    model_info:
+      description: "Local Qwen 3.5 4B via Ollama (zero-cost primary)"
+
+  - model_name: "local-fast"
+    litellm_params:
+      model: "ollama/qwen3.5:2b"
+      api_base: "http://localhost:11434"
+    model_info:
+      description: "Ultra-fast local 2B model for simple responses"
+
+  - model_name: "local-smart"
+    litellm_params:
+      model: "ollama/qwen3.5:9b"
+      api_base: "http://localhost:11434"
+    model_info:
+      description: "Smarter local 9B model for complex reasoning"
+
+  # Tier 2: Free cloud APIs (fallback)
+  - model_name: "mistral-small-latest"
+    litellm_params:
+      model: "mistral/mistral-small-latest"
+      api_key: "os.environ/MISTRAL_API_KEY"
+
+  - model_name: "gemini-cloud"
+    litellm_params:
+      model: "gemini/gemini-2.0-flash"
+      api_key: "os.environ/GEMINI_API_KEY"
+
+general_settings:
+  master_key: "sk-tasha-local-dev"
+
+litellm_settings:
+  fallbacks:
+    - model: "gemini-2.0-flash"
+      fallback_models: ["mistral-small-latest", "gemini-cloud"]
+  set_verbose: false
+  drop_params: true
+  num_retries: 2
+  request_timeout: 30

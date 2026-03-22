@@ -23,7 +23,6 @@ export function StrategyForgeModal({
 	onClose,
 	formData,
 }: StrategyForgeModalProps) {
-	// Logic to generate strategy based on goals
 	const generateStrategy = (goals: string) => {
 		const strategyPoints = [
 			{
@@ -32,12 +31,14 @@ export function StrategyForgeModal({
 					"Our Paladin swarm will begin a deep forensic analysis of your current stack.",
 				icon: ShieldCheck,
 				color: "text-blue-400",
+				bgColor: "from-blue-500/20 to-blue-600/10",
 			},
 			{
 				title: "Growth Vector Mapping",
 				description: `Tailoring agentic workflows to specifically address your goal: "${goals.slice(0, 60)}..."`,
 				icon: Target,
 				color: "text-rose-400",
+				bgColor: "from-rose-500/20 to-rose-600/10",
 			},
 			{
 				title: "Agent Deployment (Phase 1)",
@@ -45,6 +46,7 @@ export function StrategyForgeModal({
 					"Provisioning Sir Forge and Squire Clean for local repo optimization.",
 				icon: Rocket,
 				color: "text-violet-400",
+				bgColor: "from-violet-500/20 to-violet-600/10",
 			},
 		];
 
@@ -58,6 +60,7 @@ export function StrategyForgeModal({
 					"Activating high-temperature Videneptus loops for rapid market expansion.",
 				icon: Zap,
 				color: "text-amber-400",
+				bgColor: "from-amber-500/20 to-amber-600/10",
 			};
 		}
 
@@ -76,7 +79,7 @@ export function StrategyForgeModal({
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={onClose}
-						className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+						className="absolute inset-0 bg-black/80 backdrop-blur-md"
 					/>
 
 					{/* Modal */}
@@ -84,45 +87,55 @@ export function StrategyForgeModal({
 						initial={{ opacity: 0, scale: 0.9, y: 20 }}
 						animate={{ opacity: 1, scale: 1, y: 0 }}
 						exit={{ opacity: 0, scale: 0.9, y: 20 }}
-						className="relative w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl"
+						transition={{ type: "spring", duration: 0.5 }}
+						className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] shadow-2xl backdrop-blur-2xl"
 					>
+						{/* Top gradient line */}
+						<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/60 to-transparent" />
+
 						{/* Header */}
-						<div className="p-6 bg-gradient-to-br from-zinc-900 to-black border-b border-zinc-800">
-							<div className="flex items-center gap-3 mb-2">
-								<div className="bg-rose-500/10 p-2 rounded-lg">
-									<Sparkles className="h-5 w-5 text-rose-500" />
+						<div className="relative border-b border-white/[0.06] p-6">
+							<div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent" />
+							<div className="relative flex items-center gap-3">
+								<div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500/20 to-violet-600/20 ring-1 ring-white/[0.08]">
+									<Sparkles className="h-5 w-5 text-rose-400" />
 								</div>
-								<h2 className="text-xl font-bold text-white tracking-tight">
-									Strategy Forge: Initiated
-								</h2>
+								<div>
+									<h2 className="text-lg font-bold tracking-tight text-white">
+										{"Strategy Forge // Initiated"}
+									</h2>
+									<p className="mt-0.5 text-[12px] text-zinc-500">
+										{"Right then! Tasha has synthesized a custom roadmap for "}
+										<span className="font-medium text-zinc-300">
+											{formData.company || "your organization"}
+										</span>
+									</p>
+								</div>
 							</div>
-							<p className="text-zinc-400 text-sm">
-								The Nexus has synthesized a custom roadmap for{" "}
-								<span className="text-white font-medium">
-									{formData.company || "your organization"}
-								</span>
-								.
-							</p>
 						</div>
 
-						{/* Content */}
-						<div className="p-6 space-y-6">
+						{/* Strategy Points */}
+						<div className="space-y-4 p-6">
 							{points.map((point, index) => (
 								<motion.div
 									key={point.title}
 									initial={{ opacity: 0, x: -20 }}
 									animate={{ opacity: 1, x: 0 }}
-									transition={{ delay: index * 0.1 + 0.2 }}
-									className="flex gap-4 group"
+									transition={{ delay: index * 0.12 + 0.2 }}
+									className="group flex gap-4 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all hover:border-white/[0.1] hover:bg-white/[0.04]"
 								>
-									<div className="flex-shrink-0 mt-1">
-										<point.icon className={`h-5 w-5 ${point.color}`} />
+									<div className="shrink-0">
+										<div
+											className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${point.bgColor} ring-1 ring-white/[0.08]`}
+										>
+											<point.icon className={`h-4 w-4 ${point.color}`} />
+										</div>
 									</div>
 									<div>
-										<h3 className="text-sm font-semibold text-zinc-200 group-hover:text-white transition-colors">
+										<h3 className="text-[13px] font-semibold text-zinc-200 transition-colors group-hover:text-white">
 											{point.title}
 										</h3>
-										<p className="text-xs text-zinc-500 mt-1 leading-relaxed">
+										<p className="mt-1 text-[11px] leading-relaxed text-zinc-500">
 											{point.description}
 										</p>
 									</div>
@@ -131,16 +144,18 @@ export function StrategyForgeModal({
 						</div>
 
 						{/* Footer */}
-						<div className="p-6 bg-zinc-900/50 flex flex-col gap-3">
+						<div className="border-t border-white/[0.06] p-6">
 							<Button
 								onClick={onClose}
-								className="w-full bg-white text-black hover:bg-zinc-200 font-bold py-6 rounded-xl transition-all active:scale-[0.98]"
+								className="w-full gap-2 bg-gradient-to-r from-rose-500 to-violet-600 py-6 font-bold text-white shadow-lg shadow-rose-500/20 transition-all hover:from-rose-600 hover:to-violet-700 hover:shadow-rose-500/30 active:scale-[0.98]"
 							>
-								Access Nexus Dashboard
-								<ArrowRight className="ml-2 h-4 w-4" />
+								<span className="font-mono text-[11px] uppercase tracking-wider">
+									Access Nexus Dashboard
+								</span>
+								<ArrowRight className="h-4 w-4" />
 							</Button>
-							<p className="text-[10px] text-center text-zinc-600 uppercase tracking-widest font-medium">
-								Sovereign Authorization Required • L5 Agentic Clear
+							<p className="mt-3 text-center font-mono text-[9px] uppercase tracking-widest text-zinc-600">
+								{"Sovereign Authorization Required // L5 Agentic Clear"}
 							</p>
 						</div>
 					</motion.div>

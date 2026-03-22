@@ -13,7 +13,7 @@ const nextConfig = {
               style-src 'self' 'unsafe-inline';
               img-src 'self' blob: data: *.supabase.co;
               font-src 'self';
-              connect-src 'self' *.supabase.co *.livekit.cloud;
+              connect-src 'self' *.supabase.co *.livekit.cloud http://localhost:8080 https://api.mistral.ai;
               frame-src 'self';
             `
 							.replace(/\s+/g, " ")

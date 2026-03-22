@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tasha_Lead_Capture_Trace",
+  "type": "object",
+  "properties": {
+    "session_id": { "type": "string", "description": "UUID of the voice session" },
+    "client_data": {
+      "type": "object",
+      "properties": {
+        "full_name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "marketing_goal": { "type": "string" }
+      },
+      "required": ["full_name", "email", "marketing_goal"]
+    },
+    "scheduling_state": {
+      "type": "object",
+      "properties": {
+        "requested_datetime": { "type": "string", "format": "date-time" },
+        "invite_sent": { "type": "boolean" }
+      }
+    },
+    "error_handling": {
+      "type": "object",
+      "properties": {
+        "barge_in_detected": { "type": "boolean" },
+        "api_failure": { "type": "string", "description": "Log of any tool call failures" }
+      }
+    }
+  },
+  "required": ["session_id", "client_data", "scheduling_state"]
+}

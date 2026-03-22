@@ -1,16 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type JSX, useCallback, useEffect, useState } from "react";
+import { type JSX, useCallback, useEffect, useRef, useState } from "react";
 import { AmbientGlow } from "@/components/ui/ambient-glow";
 import { Progress } from "@/components/ui/progress";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useReceptionistVoice } from "@/hooks/use-receptionist-voice";
 import { emitNexusEvent } from "@/lib/nexus-sync";
-import { extractOnboardingFromTranscript } from "@/lib/onboarding/voice-intake";
 import { logToUKG } from "@/lib/ukg-logger";
 import { INITIAL_DATA, PHASE_CONFIG } from "./data";
 import { LadyReceptionAvatar } from "./lady-reception-avatar";
+import { MobileVoiceWidget } from "./mobile-voice-widget";
 import { PhaseForm } from "./phase-form";
 import { StrategyForgeModal } from "./strategy-forge-modal";
 import type {
@@ -18,6 +18,12 @@ import type {
 	OnboardingTranscriptEvent,
 	PhaseType,
 } from "./types";
+
+type ConversationEntry = {
+	role: "user" | "tasha";
+	content: string;
+	timestamp: number;
+};
 
 export function OnboardingFlow(): JSX.Element {
 	const router = useRouter();
@@ -34,6 +40,10 @@ export function OnboardingFlow(): JSX.Element {
 	const [remoteSaveState, setRemoteSaveState] = useState<
 		"idle" | "saving" | "saved" | "error"
 	>("idle");
+	const [conversation, setConversation] = useState<ConversationEntry[]>([]);
+	const [toolsTriggered, setToolsTriggered] = useState<string[]>([]);
+	const tashaSessionRef = useRef(crypto.randomUUID());
+	const speakRef = useRef<(text: string) => void>(() => {});
 
 	const debouncedWebsite = useDebounce(formData.website, 1500);
 	const debouncedRemotePayload = useDebounce(
@@ -50,7 +60,7 @@ export function OnboardingFlow(): JSX.Element {
 
 	const buildPhasePrompt = useCallback(() => {
 		if (isThinking) {
-			return "Please wait while I analyze your digital footprint and calibrate the strategy.";
+			return "Hold tight — running that through my neural circuits...";
 		}
 
 		const unanswered = phase.questions
@@ -61,10 +71,10 @@ export function OnboardingFlow(): JSX.Element {
 			.map((question) => question.label);
 
 		if (unanswered.length === 0) {
-			return `${phase.title} is complete. You can continue to the next phase, or give me any extra context you want me to note.`;
+			return `${phase.title} is all sorted! Hit continue or drop any extra context you want me to note. Cheers!`;
 		}
 
-		return `${phase.description}. I still need: ${unanswered.join(", ")}. You can speak naturally and I will capture what I can.`;
+		return `${phase.description}. I still need: ${unanswered.join(", ")}. Speak naturally and I'll capture what I can, bet.`;
 	}, [formData, isThinking, phase]);
 
 	const triggerAutonomousResearch = useCallback(
@@ -75,8 +85,8 @@ export function OnboardingFlow(): JSX.Element {
 
 			setIsThinking(true);
 			emitNexusEvent({
-				agent: "A-01",
-				action: `Initiated Intelligence Scout for: ${url}`,
+				agent: "T-01",
+				action: `Tasha initiated Intelligence Scout for: ${url}`,
 			});
 
 			try {
@@ -98,13 +108,13 @@ export function OnboardingFlow(): JSX.Element {
 				}));
 
 				emitNexusEvent({
-					agent: "A-02",
-					action: `Synthesized background report for ${data.company.toUpperCase()}.`,
+					agent: "T-01",
+					action: `Tasha synthesized background report for ${data.company.toUpperCase()}.`,
 				});
 			} catch (error) {
 				console.error("Intelligence Scout Failure:", error);
 				emitNexusEvent({
-					agent: "A-01",
+					agent: "T-01",
 					action: `Intelligence Scout failed for ${url}. Manual intake required.`,
 				});
 			} finally {
@@ -124,12 +134,64 @@ export function OnboardingFlow(): JSX.Element {
 
 			setIsThinking(true);
 			emitNexusEvent({
-				agent: "A-04",
-				action: "Neural Voice Compiler is analyzing your input...",
+				agent: "T-01",
+				action: "Tasha is analyzing your voice input...",
 			});
 
+			// Add user message to conversation
+			setConversation((prev) => [
+				...prev,
+				{ role: "user", content: transcript, timestamp: Date.now() },
+			]);
+
 			try {
-				const response = await fetch("/api/onboarding/extract", {
+				// Route through Tasha's chat API for AI-powered extraction + response
+				const tashaResponse = await fetch("/api/tasha/chat", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						session_id: tashaSessionRef.current,
+						utterance: transcript,
+					}),
+				});
+
+				if (tashaResponse.ok) {
+					const tashaData = await tashaResponse.json();
+
+					// Map Tasha's extracted lead data back to onboarding form
+					if (tashaData.lead) {
+						setFormData((previous) => ({
+							...previous,
+							name: previous.name || tashaData.lead.full_name || "",
+							email: previous.email || tashaData.lead.email || "",
+							goals: previous.goals || tashaData.lead.marketing_goal || "",
+						}));
+					}
+
+					if (tashaData.tools_triggered?.length > 0) {
+						setToolsTriggered((prev) => [
+							...prev,
+							...tashaData.tools_triggered,
+						]);
+					}
+
+					// Add Tasha's response to conversation
+					if (tashaData.response) {
+						setConversation((prev) => [
+							...prev,
+							{
+								role: "tasha",
+								content: tashaData.response,
+								timestamp: Date.now(),
+							},
+						]);
+						setVoiceAssistantMessage(tashaData.response);
+						speakRef.current(tashaData.response);
+					}
+				}
+
+				// Also run the existing regex extraction for form fields
+				const extractResponse = await fetch("/api/onboarding/extract", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
@@ -139,51 +201,45 @@ export function OnboardingFlow(): JSX.Element {
 					}),
 				});
 
-				if (!response.ok) throw new Error("AI Extraction failed");
+				if (extractResponse.ok) {
+					const extraction = await extractResponse.json();
 
-				const extraction = await response.json();
+					if (Object.keys(extraction.updates).length > 0) {
+						setFormData((previous) => ({
+							...previous,
+							...extraction.updates,
+						}));
+						setTranscriptLog((previous) => [
+							...previous,
+							{
+								transcript,
+								phase: currentPhase,
+								capturedFields: Object.keys(extraction.updates),
+								capturedValues: extraction.updates,
+								createdAt: new Date().toISOString(),
+							},
+						]);
 
-				if (Object.keys(extraction.updates).length > 0) {
-					setFormData((previous) => ({
-						...previous,
-						...extraction.updates,
-					}));
-					setTranscriptLog((previous) => [
-						...previous,
-						{
-							transcript,
-							phase: currentPhase,
-							capturedFields: Object.keys(extraction.updates),
-							capturedValues: extraction.updates,
-							createdAt: new Date().toISOString(),
-						},
-					]);
+						emitNexusEvent({
+							agent: "T-01",
+							action: `Tasha captured: ${extraction.summary.join(", ")}`,
+						});
 
-					const summary =
-						extraction.summary.length > 0
-							? `I captured ${extraction.summary.join(", ")}.`
-							: "I captured new onboarding details.";
-
-					setVoiceAssistantMessage(summary);
-					emitNexusEvent({
-						agent: "A-04",
-						action: `AI Voice Compiler updated: ${summary}`,
-					});
-
-					// Trigger research if website is captured
-					if (extraction.updates.website) {
-						triggerAutonomousResearch(extraction.updates.website);
+						if (extraction.updates.website) {
+							triggerAutonomousResearch(extraction.updates.website);
+						}
 					}
-				} else {
-					setVoiceAssistantMessage(
-						"I heard you, but I could not confidently map that to the active fields. You can keep speaking or provide more detail.",
-					);
 				}
 			} catch (error) {
-				console.error("Neural Extraction Failure:", error);
-				setVoiceAssistantMessage(
-					"My neural pathways are temporarily saturated. Please try speaking again or use manual input.",
-				);
+				console.error("Tasha Extraction Failure:", error);
+				const fallback =
+					"Ope, my wires got crossed! Try that again or type it in manually.";
+				setVoiceAssistantMessage(fallback);
+				setConversation((prev) => [
+					...prev,
+					{ role: "tasha", content: fallback, timestamp: Date.now() },
+				]);
+				speakRef.current(fallback);
 			} finally {
 				setIsThinking(false);
 			}
@@ -205,6 +261,8 @@ export function OnboardingFlow(): JSX.Element {
 	} = useReceptionistVoice({
 		onFinalTranscript: handleVoiceTranscript,
 	});
+
+	speakRef.current = speak;
 
 	useEffect(() => {
 		const savedData = localStorage.getItem("AOS_ONBOARDING_DATA");
@@ -231,7 +289,6 @@ export function OnboardingFlow(): JSX.Element {
 		}
 	}, []);
 
-	// Keep as L1 Kinetic Cache
 	useEffect(() => {
 		localStorage.setItem(
 			"AOS_ONBOARDING_DATA",
@@ -360,7 +417,6 @@ export function OnboardingFlow(): JSX.Element {
 	useEffect(() => {
 		if (
 			debouncedWebsite &&
-
 			debouncedWebsite.length > 8 &&
 			debouncedWebsite.includes(".")
 		) {
@@ -376,12 +432,12 @@ export function OnboardingFlow(): JSX.Element {
 		logToUKG({
 			type: "ONBOARDING",
 			payload: formData as unknown as Record<string, unknown>,
-			agentId: "Lady-Anya",
+			agentId: "Tasha-Prime",
 		});
 
 		emitNexusEvent({
-			agent: "A-03",
-			action: `Onboarding Session for ${formData.company || formData.name} finalized and synced to UKG.`,
+			agent: "T-01",
+			action: `Tasha finalized onboarding for ${formData.company || formData.name} and synced to UKG.`,
 		});
 
 		try {
@@ -462,22 +518,32 @@ export function OnboardingFlow(): JSX.Element {
 			<AmbientGlow color="bg-violet-600/5" position="bottom-right" />
 
 			<div className="relative z-10 mx-auto max-w-6xl px-4 py-24">
-				<div className="mx-auto mb-16 max-w-2xl">
+				{/* Header */}
+				<div className="mb-8 text-center">
+					<h1 className="text-3xl font-bold tracking-tight text-white">
+						{"Onboarding // Tasha Prime"}
+					</h1>
+					<p className="mt-2 font-mono text-[11px] uppercase tracking-[0.25em] text-zinc-500">
+						{"Voice-Powered Lead Intake // Invisioned Marketing"}
+					</p>
+				</div>
+
+				<div className="mx-auto mb-12 max-w-2xl">
 					<div className="mb-3 flex items-center justify-between">
-						<span className="text-xs font-mono uppercase tracking-widest text-zinc-500">
-							{"Governance Flow // Session Status"}
+						<span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+							{"Tasha Flow // Session Status"}
 						</span>
-						<span className="text-xs font-mono text-rose-400">
+						<span className="font-mono text-[10px] text-rose-400">
 							{Math.round(progress)}% COMPLETE
 						</span>
 					</div>
 					<Progress
 						value={progress}
-						className="h-1.5 overflow-hidden border border-border/50 bg-zinc-900"
+						className="h-1.5 overflow-hidden border border-white/[0.08] bg-white/[0.03]"
 					/>
 
 					<div className="relative mt-6 flex justify-between px-4">
-						<div className="absolute top-1/2 right-0 left-0 -z-10 h-[1px] -translate-y-1/2 bg-zinc-800" />
+						<div className="absolute top-1/2 right-0 left-0 -z-10 h-[1px] -translate-y-1/2 bg-white/[0.08]" />
 
 						{[1, 2, 3].map((phaseNum) => (
 							<div
@@ -488,7 +554,7 @@ export function OnboardingFlow(): JSX.Element {
 									className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-all duration-500 ${
 										phaseNum <= currentPhase
 											? "scale-110 bg-gradient-to-r from-rose-500 to-violet-600 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] ring-2 ring-background"
-											: "border border-zinc-800 bg-zinc-900 text-zinc-500 ring-2 ring-background"
+											: "border border-white/[0.08] bg-white/[0.03] text-zinc-500 ring-2 ring-background"
 									}`}
 								>
 									{phaseNum < currentPhase ? (
@@ -498,7 +564,7 @@ export function OnboardingFlow(): JSX.Element {
 									)}
 								</div>
 								<span
-									className={`mt-3 text-[10px] font-mono uppercase tracking-widest ${
+									className={`mt-3 font-mono text-[10px] uppercase tracking-widest ${
 										phaseNum <= currentPhase ? "text-zinc-300" : "text-zinc-600"
 									}`}
 								>
@@ -510,7 +576,7 @@ export function OnboardingFlow(): JSX.Element {
 				</div>
 
 				<div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-					<div className="lg:col-span-4">
+					<div className="hidden lg:block lg:col-span-4">
 						<LadyReceptionAvatar
 							currentPhase={currentPhase}
 							phase={phase}
@@ -521,6 +587,8 @@ export function OnboardingFlow(): JSX.Element {
 							isVoiceOutputSupported={isSpeechSynthesisSupported}
 							interimTranscript={interimTranscript}
 							lastTranscript={lastTranscript}
+							conversation={conversation}
+							toolsTriggered={toolsTriggered}
 							voiceError={
 								voiceError ||
 								(remoteSaveState === "error"
@@ -534,26 +602,45 @@ export function OnboardingFlow(): JSX.Element {
 					</div>
 
 					<div className="lg:col-span-8">
-						<div className="relative overflow-hidden rounded-2xl border border-border bg-card p-1 backdrop-blur-md">
-							<div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
-							<PhaseForm
-								currentPhase={currentPhase}
-								phase={phase}
-								formData={formData}
-								onInputChange={handleInputChange}
-								onNextPhase={handleNextPhase}
-								onPreviousPhase={handlePreviousPhase}
-							/>
+						<PhaseForm
+							currentPhase={currentPhase}
+							phase={phase}
+							formData={formData}
+							onInputChange={handleInputChange}
+							onNextPhase={handleNextPhase}
+							onPreviousPhase={handlePreviousPhase}
+						/>
 
-							<StrategyForgeModal
-								isOpen={isStrategyModalOpen}
-								onClose={handleFinalRedirect}
-								formData={formData}
-							/>
-						</div>
+						<StrategyForgeModal
+							isOpen={isStrategyModalOpen}
+							onClose={handleFinalRedirect}
+							formData={formData}
+						/>
 					</div>
 				</div>
 			</div>
+
+			<MobileVoiceWidget
+				currentPhase={currentPhase}
+				phase={phase}
+				isRecording={isListening}
+				isThinking={isThinking}
+				isSpeaking={isSpeaking}
+				isVoiceInputSupported={isSpeechRecognitionSupported}
+				isVoiceOutputSupported={isSpeechSynthesisSupported}
+				interimTranscript={interimTranscript}
+				lastTranscript={lastTranscript}
+				conversation={conversation}
+				voiceError={
+					voiceError ||
+					(remoteSaveState === "error"
+						? "Authenticated onboarding save is currently unavailable."
+						: null)
+				}
+				onToggleRecording={handleToggleRecording}
+				onReplayMessage={handleReplayMessage}
+				onStopSpeaking={stopSpeaking}
+			/>
 		</div>
 	);
 }

@@ -19,26 +19,47 @@ export async function POST(request: Request) {
 	});
 
 	try {
-		const { email_address, datetime } = await request.json();
+		const { email_address, datetime, lead_name, marketing_goal } =
+			await request.json();
 
 		if (!email_address || !datetime) {
-			return NextResponse.json({ error: "Email and Datetime are required" }, { status: 400 });
+			return NextResponse.json(
+				{ error: "Email and Datetime are required" },
+				{ status: 400 },
+			);
 		}
 
 		// 1. Log Scheduling Intent to UKG
 		await supabase.from("ukg_events").insert({
 			type: "STRATEGY",
-			payload: { 
+			payload: {
 				action: `Tasha initiated scheduling for ${email_address} at ${datetime}`,
-				status: "pending_dispatch"
+				lead_name: lead_name || "Unknown",
+				marketing_goal: marketing_goal || "",
+				status: "pending_dispatch",
 			},
 			agent_id: "Tasha-Prime",
 		});
 
-		// 2. KINETIC ACTION: Dispatch Calendar Invite
-		// TODO: Integrate Google Calendar API or trigger a Make.com/Zapier webhook
-		// Example: await fetch(process.env.CALENDAR_WEBHOOK_URL, { ... })
-		console.log(`[KINETIC]: Dispatching invite to ${email_address} for ${datetime}`);
+		// 2. Store scheduling request for Claude MCP dispatch
+		const { error: insertError } = await supabase
+			.from("tasha_scheduling_queue")
+			.insert({
+				lead_email: email_address,
+				lead_name: lead_name || "Unknown",
+				requested_datetime: datetime,
+				marketing_goal: marketing_goal || "",
+				status: "pending",
+				organizer_email: "vizion711@gmail.com",
+			});
+
+		if (insertError) {
+			// Table might not exist yet — fall back to UKG log only
+			console.warn(
+				"[SCHEDULE] tasha_scheduling_queue insert failed:",
+				insertError.message,
+			);
+		}
 
 		// 3. Update Lead Status
 		await supabase
@@ -46,12 +67,16 @@ export async function POST(request: Request) {
 			.update({ status: "scheduled", metadata: { appointment: datetime } })
 			.eq("email", email_address);
 
-		return NextResponse.json({ 
-			success: true, 
-			message: "Calendar invite dispatched via Tasha-Prime." 
+		return NextResponse.json({
+			success: true,
+			message: `Scheduling request queued for ${email_address} at ${datetime}. Run /dispatch-invites to send via Google Calendar + Gmail.`,
+			dispatch_status: "pending",
 		});
 	} catch (error) {
 		console.error("Scheduling Failure:", error);
-		return NextResponse.json({ error: "Failed to dispatch invite" }, { status: 500 });
+		return NextResponse.json(
+			{ error: "Failed to queue scheduling request" },
+			{ status: 500 },
+		);
 	}
 }

@@ -30,7 +30,8 @@ export const INITIAL_DATA: OnboardingData = {
 export const PHASE_CONFIG: Record<PhaseType, PhaseData> = {
 	1: {
 		title: "Welcome & Basic Information",
-		description: "Let's start by getting to know you and your business",
+		description:
+			"Right then! Let's get the basics sorted — tell me about you and your business",
 		icon: User,
 		color: "bg-rose-500",
 		questions: [
@@ -86,7 +87,7 @@ export const PHASE_CONFIG: Record<PhaseType, PhaseData> = {
 	2: {
 		title: "Business Goals & Target Audience",
 		description:
-			"Help us understand your marketing objectives and ideal customers",
+			"Lovely! Now let's talk marketing goals and who you're trying to reach",
 		icon: TrendingUp,
 		color: "bg-amber-500",
 		questions: [
@@ -143,7 +144,8 @@ export const PHASE_CONFIG: Record<PhaseType, PhaseData> = {
 	},
 	3: {
 		title: "Strategy Alignment & Timeline",
-		description: "Let's align on your strategy and implementation timeline",
+		description:
+			"Ope, we're in the home stretch! Let's lock in the timeline and wrap this up",
 		icon: Zap,
 		color: "bg-violet-500",
 		questions: [
