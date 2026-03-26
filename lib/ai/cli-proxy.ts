@@ -45,7 +45,7 @@ export async function callCLIProxy(
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({
-			model: request.model || "gemini-2.0-flash",
+			model: request.model || "gemini-2.5-flash",
 			...request,
 			stream: false,
 		}),
@@ -108,7 +108,7 @@ export async function callGemini(
 				Authorization: `Bearer ${geminiKey}`,
 			},
 			body: JSON.stringify({
-				model: request.model || "gemini-2.0-flash",
+				model: request.model || "gemini-2.5-flash",
 				messages: request.messages,
 				temperature: request.temperature ?? 0.7,
 				max_tokens: request.max_tokens ?? 150,

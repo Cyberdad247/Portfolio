@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 		// 2. Perform Kinetic Research (Gemini 2.0 Flash Implementation)
 		console.log(`[L3 NEURAL]: Researching ${url} with Gemini...`);
 		
-		const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+		const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 		const prompt = `
       You are Merlin Ω, the Neural Kernel of the Invisioned Portfolio. 

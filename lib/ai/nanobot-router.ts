@@ -207,22 +207,22 @@ function buildRoutingPlan(
 	switch (complexity) {
 		case "simple":
 			return {
-				model: "local-fast",
+				model: "omni/tasha-fast",
 				provider: "cliproxy",
 				maxTokens: Math.min(100, 512 - estimatedPromptTokens),
 			};
 
 		case "medium":
 			return {
-				model: "gemini-2.0-flash",
+				model: "omni/tasha-standard",
 				provider: "cliproxy",
 				maxTokens: Math.min(150, 1024 - estimatedPromptTokens),
 			};
 
 		case "complex":
 			return {
-				model: "mistral-small-latest",
-				provider: "mistral",
+				model: "omni/tasha-apex",
+				provider: "cliproxy",
 				maxTokens: Math.min(250, 2048 - estimatedPromptTokens),
 			};
 	}
