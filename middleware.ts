@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { INTERNAL_ROLES } from "@/lib/auth/roles";
-import { getSupabaseEnv } from "@/lib/supabase/env";
+import { getSupabaseEnvSafe } from "@/lib/supabase/env";
 
 export async function middleware(request: NextRequest) {
 	const pathname = request.nextUrl.pathname;
@@ -26,7 +26,12 @@ export async function middleware(request: NextRequest) {
 		const response = NextResponse.next({
 			request,
 		});
-		const { url, anonKey } = getSupabaseEnv();
+		const env = getSupabaseEnvSafe();
+		if (!env) {
+			// Supabase not configured — allow through without auth
+			return response;
+		}
+		const { url, anonKey } = env;
 
 		const supabase = createServerClient(url, anonKey, {
 			cookies: {

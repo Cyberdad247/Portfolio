@@ -1,13 +1,28 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { getSupabaseEnv } from "@/lib/supabase/env";
+import { getSupabaseEnvSafe } from "@/lib/supabase/env";
 
 export const runtime = "edge";
 
+const FALLBACK_FLEET = [
+	{ id: "A-01", name: "Oracle", status: "idle", role: "Strategic Planner" },
+	{ id: "A-02", name: "Forge", status: "active", role: "Kinetic Coder" },
+	{ id: "A-03", name: "Sentinel", status: "active", role: "Security Auditor" },
+	{ id: "A-04", name: "Debug", status: "idle", role: "Self-Healing QA" },
+];
+
 export async function GET() {
 	try {
-		const { url: supabaseUrl, anonKey } = getSupabaseEnv();
+		const env = getSupabaseEnvSafe();
+		if (!env) {
+			return NextResponse.json({
+				fleet: FALLBACK_FLEET,
+				lastUpdated: new Date().toISOString(),
+				system: "STATIC",
+			});
+		}
+		const { url: supabaseUrl, anonKey } = env;
 		const cookieStore = await cookies();
 
 		const supabase = createServerClient(supabaseUrl, anonKey, {
