@@ -17,6 +17,7 @@ image = (
         "litellm[proxy]==1.72.4",
         "uvicorn[standard]",
         "fastapi",
+        "pyyaml",
     )
     .add_local_file(
         "infra/litellm/config.yaml",
@@ -45,25 +46,98 @@ image = (
 def tasha_proxy():
     """LiteLLM proxy server for Tasha — cost-optimized model routing."""
     import os
+    import yaml
+    from fastapi import FastAPI, Request
+    from fastapi.responses import JSONResponse
     import litellm
-    from litellm.proxy.proxy_server import app as litellm_app
+    from litellm import Router
 
-    # Load config
-    os.environ["LITELLM_CONFIG_PATH"] = "/app/config.yaml"
-
-    # Set master key from Modal secret
-    master_key = os.environ.get("LITELLM_MASTER_KEY", "")
-    if master_key:
-        os.environ["LITELLM_MASTER_KEY"] = master_key
-
-    # Ensure API keys are available from Modal secrets
-    # These are injected by modal.Secret.from_name("my-sovereign-secrets")
-    # Expected env vars: GEMINI_API_KEY, MISTRAL_API_KEY, LITELLM_MASTER_KEY
-
-    # Suppress verbose logging in production
     litellm.set_verbose = False
+    litellm.drop_params = True
 
-    return litellm_app
+    # Normalize API key env var names (Modal secrets may use different names)
+    if os.environ.get("GOOGLE_API_KEY") and not os.environ.get("GEMINI_API_KEY"):
+        os.environ["GEMINI_API_KEY"] = os.environ["GOOGLE_API_KEY"]
+    litellm.num_retries = 2
+    litellm.request_timeout = 30
+
+    # Load config and build router
+    with open("/app/config.yaml") as f:
+        config = yaml.safe_load(f)
+
+    model_list = config.get("model_list", [])
+    # Strip local-only models (Ollama won't be reachable from Modal)
+    # and resolve os.environ/ references to actual env vars
+    cloud_models = []
+    for m in model_list:
+        params = m.get("litellm_params", {})
+        if "ollama" in params.get("model", ""):
+            continue
+        # Resolve os.environ/VAR_NAME to actual env var values
+        for key, val in params.items():
+            if isinstance(val, str) and val.startswith("os.environ/"):
+                env_name = val.split("/", 1)[1]
+                params[key] = os.environ.get(env_name, "")
+        cloud_models.append(m)
+
+    fallback_cfg = config.get("litellm_settings", {}).get("fallbacks", [])
+
+    router = Router(
+        model_list=cloud_models,
+        fallbacks=[{"gemini-cloud": ["mistral-small-latest"]}],
+        num_retries=2,
+        timeout=30,
+    )
+
+    gateway = FastAPI(title="Tasha LiteLLM Gateway")
+    master_key = os.environ.get("LITELLM_MASTER_KEY", "")
+
+    @gateway.get("/health/liveliness")
+    async def health():
+        return "I'm alive!"
+
+    @gateway.get("/v1/models")
+    async def list_models():
+        models = [
+            {
+                "id": m["model_name"],
+                "object": "model",
+                "owned_by": "tasha-gateway",
+            }
+            for m in cloud_models
+        ]
+        return {"data": models, "object": "list"}
+
+    @gateway.post("/v1/chat/completions")
+    async def chat_completions(request: Request):
+        # Auth check
+        auth = request.headers.get("Authorization", "")
+        if master_key and auth != f"Bearer {master_key}":
+            return JSONResponse(
+                {"error": {"message": "Invalid API key", "type": "auth_error"}},
+                status_code=401,
+            )
+
+        data = await request.json()
+        model = data.pop("model", "gemini-cloud")
+        messages = data.pop("messages", [])
+
+        try:
+            response = await router.acompletion(
+                model=model,
+                messages=messages,
+                **{k: v for k, v in data.items() if k in (
+                    "temperature", "max_tokens", "stream", "top_p",
+                )},
+            )
+            return response.model_dump()
+        except Exception as e:
+            return JSONResponse(
+                {"error": {"message": str(e), "type": "server_error"}},
+                status_code=500,
+            )
+
+    return gateway
 
 
 @app.function(
