@@ -25,9 +25,24 @@ export type ChatCompletionResponse = {
 	};
 };
 
+// ---------------------------------------------------------------------------
+// Gateway Switch: "local" (CLIProxyAPI on :8080) vs "modal" (24/7 cloud)
+// Set TASHA_GATEWAY=modal in .env to route through Modal LiteLLM proxy.
+// Default: local (zero cost)
+// ---------------------------------------------------------------------------
+const GATEWAY_MODE = process.env.TASHA_GATEWAY || "local";
+
+const MODAL_GATEWAY_URL =
+	process.env.MODAL_GATEWAY_URL ||
+	"https://cyberdad247--tasha-litellm-gateway-tasha-proxy.modal.run/v1";
+const LOCAL_PROXY_URL = process.env.CLI_PROXY_URL || "http://localhost:8080/v1";
+const LITELLM_MASTER_KEY = process.env.LITELLM_MASTER_KEY || "";
+
 const PROXY_URL =
 	typeof window === "undefined"
-		? process.env.CLI_PROXY_URL || "http://localhost:8080/v1"
+		? GATEWAY_MODE === "modal"
+			? MODAL_GATEWAY_URL
+			: LOCAL_PROXY_URL
 		: "/api/ai/proxy";
 
 const MISTRAL_API_KEY = process.env.MISTRAL_API_KEY || "";
@@ -41,9 +56,17 @@ export async function callCLIProxy(
 	const url =
 		typeof window === "undefined" ? `${PROXY_URL}/chat/completions` : PROXY_URL;
 
+	const headers: Record<string, string> = {
+		"Content-Type": "application/json",
+	};
+	// Modal gateway requires the LiteLLM master key for auth
+	if (GATEWAY_MODE === "modal" && LITELLM_MASTER_KEY) {
+		headers.Authorization = `Bearer ${LITELLM_MASTER_KEY}`;
+	}
+
 	const response = await fetch(url, {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
+		headers,
 		body: JSON.stringify({
 			model: request.model || "gemini-2.5-flash",
 			...request,
@@ -144,7 +167,7 @@ export async function chatCompletion(
 	for (const provider of providers) {
 		try {
 			const result = await provider.fn(request);
-			console.log(`[TASHA_LLM] Inference via ${provider.name}`);
+			console.log(`[TASHA_LLM] Inference via ${provider.name} (gateway: ${GATEWAY_MODE})`);
 			return result;
 		} catch (error) {
 			lastError = error instanceof Error ? error : new Error(String(error));

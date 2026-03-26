@@ -31,8 +31,8 @@ image = (
         modal.Secret.from_name("my-sovereign-secrets"),
         modal.Secret.from_name("tasha-gateway-secrets"),
     ],
-    # Keep-warm: 1 container always hot for zero cold-start
-    min_containers=1,
+    # Keep-warm: 0 = cost saver (cold-start ~2-3s), set to 1 for live demos
+    min_containers=0,
     # Auto-scale up to 5 concurrent containers under load
     max_containers=5,
     # 10-minute timeout per request (generous for complex chains)
@@ -72,14 +72,10 @@ def tasha_proxy():
         modal.Secret.from_name("my-sovereign-secrets"),
         modal.Secret.from_name("tasha-gateway-secrets"),
     ],
-    schedule=modal.Period(minutes=5),
+    # Uncomment schedule for always-warm mode (adds ~$0.50/day)
+    # schedule=modal.Period(minutes=5),
     timeout=30,
 )
 def health_check():
-    """Periodic health check — pings the gateway every 5 minutes."""
-    import urllib.request
-    import json
-
-    # This runs as a separate scheduled function to keep the gateway warm
-    # and log availability metrics
+    """Health check — uncomment schedule above for always-warm mode."""
     print("[TASHA_HEALTH] Gateway heartbeat OK")
