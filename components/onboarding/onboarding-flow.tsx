@@ -8,6 +8,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { useReceptionistVoice } from "@/hooks/use-receptionist-voice";
 import { emitNexusEvent } from "@/lib/nexus-sync";
 import { logToUKG } from "@/lib/ukg-logger";
+import { supabase } from "@/lib/supabase";
 import { INITIAL_DATA, PHASE_CONFIG } from "./data";
 import { LadyReceptionAvatar } from "./lady-reception-avatar";
 import { MobileVoiceWidget } from "./mobile-voice-widget";
@@ -439,6 +440,30 @@ export function OnboardingFlow(): JSX.Element {
 			agent: "T-01",
 			action: `Tasha finalized onboarding for ${formData.company || formData.name} and synced to UKG.`,
 		});
+
+		// [L1 Substrate]: Persist lead to Supabase (triggers auto-email to vizion711@gmail.com)
+		try {
+			await supabase.from("leads").insert({
+				name: formData.name,
+				email: formData.email,
+				query: formData.goals || formData.currentChallenges || null,
+				source: "onboarding_flow",
+				status: "new",
+				metadata: {
+					company: formData.company,
+					phone: formData.phone,
+					industry: formData.industry,
+					website: formData.website,
+					targetAudience: formData.targetAudience,
+					budgetRange: formData.budgetRange,
+					preferredChannels: formData.preferredChannels,
+					timeline: formData.timeline,
+					additionalNotes: formData.additionalNotes,
+				},
+			});
+		} catch (err) {
+			console.error("[L1 SUBSTRATE]: Supabase lead sync failure:", err);
+		}
 
 		try {
 			await fetch("/api/onboarding/session", {
