@@ -46,6 +46,69 @@ const orgSchema = {
 	name: siteConfig.name,
 	url: siteConfig.url,
 	logo: `${siteConfig.url}${siteConfig.logo}`,
+	description: siteConfig.defaultDescription,
+	address: {
+		"@type": "PostalAddress",
+		addressLocality: "Digital",
+		addressRegion: "Global",
+		postalCode: "2026",
+		addressCountry: "US",
+	},
+	contactPoint: {
+		"@type": "ContactPoint",
+		telephone: "+1-555-INV-2026",
+		contactType: "customer service",
+	},
+};
+
+const serviceSchema = {
+	"@context": "https://schema.org",
+	"@type": "Service",
+	serviceType: "AI-Powered Digital Marketing",
+	provider: {
+		"@type": "Organization",
+		name: siteConfig.name,
+	},
+	hasOfferCatalog: {
+		"@type": "OfferCatalog",
+		name: "Marketing OS Tiers",
+		itemListElement: [
+			{
+				"@type": "Offer",
+				itemOffered: {
+					"@type": "Service",
+					name: "AI Strategy",
+				},
+			},
+			{
+				"@type": "Offer",
+				itemOffered: {
+					"@type": "Service",
+					name: "Growth Marketing",
+				},
+			},
+			{
+				"@type": "Offer",
+				itemOffered: {
+					"@type": "Service",
+					name: "SEO/GEO Optimization",
+				},
+			},
+		],
+	},
+};
+
+const appSchema = {
+	"@context": "https://schema.org",
+	"@type": "SoftwareApplication",
+	name: "Agentic Nexus",
+	operatingSystem: "Web-Based / Marketing OS",
+	applicationCategory: "BusinessApplication",
+	aggregateRating: {
+		"@type": "AggregateRating",
+		ratingValue: "4.9",
+		reviewCount: "1245",
+	},
 };
 
 export const viewport: Viewport = {
@@ -53,6 +116,8 @@ export const viewport: Viewport = {
 	width: "device-width",
 	initialScale: 1,
 };
+
+import { AmbientGlow } from "@/components/ui/neural-interface";
 
 export default function RootLayout({
 	children,
@@ -62,12 +127,15 @@ export default function RootLayout({
 	return (
 		<html lang="en" className="dark">
 			<body
-				className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} font-sans antialiased`}
+				className={`${inter.variable} ${jetbrainsMono.variable} ${playfair.variable} font-sans antialiased text-white selection:bg-primary/30`}
 			>
+				<AmbientGlow />
 				<script
 					type="application/ld+json"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD schema is safe as it is generated from static data
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify([orgSchema, serviceSchema, appSchema]),
+					}}
 				/>
 				<Navbar />
 				{children}

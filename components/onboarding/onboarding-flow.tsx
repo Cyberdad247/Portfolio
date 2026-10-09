@@ -1,9 +1,8 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { type JSX, useCallback, useEffect, useRef, useState } from "react";
-import { AmbientGlow } from "@/components/ui/ambient-glow";
-import { Progress } from "@/components/ui/progress";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useReceptionistVoice } from "@/hooks/use-receptionist-voice";
 import { emitNexusEvent } from "@/lib/nexus-sync";
@@ -19,6 +18,9 @@ import type {
 	OnboardingTranscriptEvent,
 	PhaseType,
 } from "./types";
+
+import { NeuralCard } from "@/components/ui/neural-interface";
+import { tokens, cn } from "@/lib/utils";
 
 type ConversationEntry = {
 	role: "user" | "tasha";
@@ -538,111 +540,135 @@ export function OnboardingFlow(): JSX.Element {
 	}, [buildPhasePrompt, isSpeechSynthesisSupported, speak]);
 
 	return (
-		<div className="relative min-h-screen">
-			<AmbientGlow color="bg-rose-500/5" position="top-left" />
-			<AmbientGlow color="bg-violet-600/5" position="bottom-right" />
-
-			<div className="relative z-10 mx-auto max-w-6xl px-4 py-24">
-				{/* Header */}
-				<div className="mb-8 text-center">
-					<h1 className="text-3xl font-bold tracking-tight text-white">
-						{"Onboarding // Tasha Prime"}
-					</h1>
-					<p className="mt-2 font-mono text-[11px] uppercase tracking-[0.25em] text-zinc-500">
-						{"Voice-Powered Lead Intake // Invisioned Marketing"}
-					</p>
-				</div>
-
-				<div className="mx-auto mb-12 max-w-2xl">
-					<div className="mb-3 flex items-center justify-between">
-						<span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
-							{"Tasha Flow // Session Status"}
-						</span>
-						<span className="font-mono text-[10px] text-rose-400">
-							{Math.round(progress)}% COMPLETE
-						</span>
-					</div>
-					<Progress
-						value={progress}
-						className="h-1.5 overflow-hidden border border-white/[0.08] bg-white/[0.03]"
-					/>
-
-					<div className="relative mt-6 flex justify-between px-4">
-						<div className="absolute top-1/2 right-0 left-0 -z-10 h-[1px] -translate-y-1/2 bg-white/[0.08]" />
-
-						{[1, 2, 3].map((phaseNum) => (
-							<div
-								key={phaseNum}
-								className="relative z-10 flex flex-col items-center bg-background px-4"
-							>
-								<div
-									className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-all duration-500 ${
-										phaseNum <= currentPhase
-											? "scale-110 bg-gradient-to-r from-rose-500 to-violet-600 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] ring-2 ring-background"
-											: "border border-white/[0.08] bg-white/[0.03] text-zinc-500 ring-2 ring-background"
-									}`}
-								>
-									{phaseNum < currentPhase ? (
-										<span className="text-white">OK</span>
-									) : (
-										phaseNum
-									)}
-								</div>
-								<span
-									className={`mt-3 font-mono text-[10px] uppercase tracking-widest ${
-										phaseNum <= currentPhase ? "text-zinc-300" : "text-zinc-600"
-									}`}
-								>
-									P{phaseNum}
+		<div className="relative min-h-screen w-full flex items-center justify-center p-6 overflow-hidden">
+			<div className="relative z-10 w-full max-w-7xl px-4 py-24">
+				<motion.div
+					initial="hidden"
+					animate="visible"
+					variants={tokens.animation.stagger(0.15)}
+					className="flex flex-col gap-16"
+				>
+					{/* HEADER AREA */}
+					<div className="text-center space-y-6">
+						<motion.div 
+							variants={{
+								hidden: { opacity: 0, scale: 0.8 },
+								visible: { opacity: 1, scale: 1, transition: tokens.animation.spring }
+							}}
+							className="flex justify-center"
+						>
+							<div className="rounded-full border border-white/10 bg-white/5 px-6 py-2 backdrop-blur-md">
+								<span className="text-[10px] font-mono font-bold uppercase tracking-[0.4em] text-primary">
+									Handshake Protocol // v700.sync
 								</span>
 							</div>
-						))}
-					</div>
-				</div>
-
-				<div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-					<div className="hidden lg:block lg:col-span-4">
-						<LadyReceptionAvatar
-							currentPhase={currentPhase}
-							phase={phase}
-							isRecording={isListening}
-							isThinking={isThinking}
-							isSpeaking={isSpeaking}
-							isVoiceInputSupported={isSpeechRecognitionSupported}
-							isVoiceOutputSupported={isSpeechSynthesisSupported}
-							interimTranscript={interimTranscript}
-							lastTranscript={lastTranscript}
-							conversation={conversation}
-							toolsTriggered={toolsTriggered}
-							voiceError={
-								voiceError ||
-								(remoteSaveState === "error"
-									? "Authenticated onboarding save is currently unavailable."
-									: null)
-							}
-							onToggleRecording={handleToggleRecording}
-							onReplayMessage={handleReplayMessage}
-							onStopSpeaking={stopSpeaking}
-						/>
+						</motion.div>
+						<motion.h1 
+							variants={{
+								hidden: { opacity: 0, y: 20 },
+								visible: { opacity: 1, y: 0, transition: tokens.animation.spring }
+							}}
+							className="text-5xl font-extrabold tracking-tighter text-white md:text-8xl uppercase leading-none"
+						>
+							Neural <span className="text-primary italic">Sync</span>
+						</motion.h1>
+						<div className="mx-auto max-w-xl">
+							<div className="flex justify-between items-end mb-3 font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+								<span>Progress // Phase {currentPhase}</span>
+								<span className="text-primary font-bold">{Math.round(progress)}%</span>
+							</div>
+							<div className="h-1 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+								<motion.div 
+									className="h-full bg-primary shadow-[0_0_15px_rgba(168,85,247,0.5)]"
+									initial={{ width: 0 }}
+									animate={{ width: `${progress}%` }}
+									transition={{ duration: 1, ease: "circOut" }}
+								/>
+							</div>
+						</div>
 					</div>
 
-					<div className="lg:col-span-8">
-						<PhaseForm
-							currentPhase={currentPhase}
-							phase={phase}
-							formData={formData}
-							onInputChange={handleInputChange}
-							onNextPhase={handleNextPhase}
-							onPreviousPhase={handlePreviousPhase}
-						/>
+					<div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
+						{/* LEFT: AVATAR & METRICS */}
+						<div className="hidden lg:flex lg:col-span-4 flex-col gap-8">
+							<NeuralCard variant="premium" className="p-10 aspect-square flex items-center justify-center">
+								<LadyReceptionAvatar
+									currentPhase={currentPhase}
+									phase={phase}
+									isRecording={isListening}
+									isThinking={isThinking}
+									isSpeaking={isSpeaking}
+									isVoiceInputSupported={isSpeechRecognitionSupported}
+									isVoiceOutputSupported={isSpeechSynthesisSupported}
+									interimTranscript={interimTranscript}
+									lastTranscript={lastTranscript}
+									conversation={conversation}
+									toolsTriggered={toolsTriggered}
+									voiceError={
+										voiceError ||
+										(remoteSaveState === "error"
+											? "Sync unavailable."
+											: null)
+									}
+									onToggleRecording={handleToggleRecording}
+									onReplayMessage={handleReplayMessage}
+									onStopSpeaking={stopSpeaking}
+								/>
+							</NeuralCard>
+							
+							<NeuralCard className="p-8">
+								<h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500 mb-6">Neural Pathways</h3>
+								<div className="space-y-4">
+									{[1, 2, 3].map((p) => (
+										<div key={p} className="flex items-center gap-4">
+											<div className={cn(
+												"h-2 w-2 rounded-full transition-all duration-700",
+												p <= currentPhase ? "bg-primary shadow-[0_0_10px_rgba(168,85,247,0.8)] scale-125" : "bg-white/10"
+											)} />
+											<span className={cn(
+												"text-xs font-mono uppercase tracking-widest",
+												p === currentPhase ? "text-white font-bold" : "text-zinc-600"
+											)}>
+												{PHASE_CONFIG[p as PhaseType].title}
+											</span>
+										</div>
+									))}
+								</div>
+							</NeuralCard>
+						</div>
 
-						<StrategyForgeModal
-							isOpen={isStrategyModalOpen}
-							onClose={handleFinalRedirect}
-							formData={formData}
-						/>
+						{/* RIGHT: FORM ENGINE */}
+						<div className="lg:col-span-8">
+							<NeuralCard variant="premium" className="p-8 md:p-16 min-h-[600px] flex flex-col">
+								<AnimatePresence mode="wait">
+									<motion.div
+										key={currentPhase}
+										initial={{ opacity: 0, x: 20, filter: "blur(10px)" }}
+										animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+										exit={{ opacity: 0, x: -20, filter: "blur(10px)" }}
+										transition={tokens.animation.spring}
+										className="flex-1"
+									>
+										<PhaseForm
+											currentPhase={currentPhase}
+											phase={phase}
+											formData={formData}
+											onInputChange={handleInputChange}
+											onNextPhase={handleNextPhase}
+											onPreviousPhase={handlePreviousPhase}
+										/>
+									</motion.div>
+								</AnimatePresence>
+							</NeuralCard>
+
+							<StrategyForgeModal
+								isOpen={isStrategyModalOpen}
+								onClose={handleFinalRedirect}
+								formData={formData}
+							/>
+						</div>
 					</div>
-				</div>
+				</motion.div>
 			</div>
 
 			<MobileVoiceWidget
@@ -659,7 +685,7 @@ export function OnboardingFlow(): JSX.Element {
 				voiceError={
 					voiceError ||
 					(remoteSaveState === "error"
-						? "Authenticated onboarding save is currently unavailable."
+						? "Sync unavailable."
 						: null)
 				}
 				onToggleRecording={handleToggleRecording}

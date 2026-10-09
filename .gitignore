@@ -25,7 +25,7 @@ __pycache__/
 *.pyc
 
 # local env files
-.env*.local
+.env*
 api/.env
 
 # vercel

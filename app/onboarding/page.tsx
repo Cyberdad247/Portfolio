@@ -1,4 +1,4 @@
-import { OnboardingFlow } from "@/components/onboarding/onboarding-flow";
+import { OnboardingClient } from "./onboarding-client";
 
 export const metadata = {
 	title: "Tasha // Onboarding | Invisioned Marketing",
@@ -9,7 +9,7 @@ export const metadata = {
 export default function OnboardingPage() {
 	return (
 		<main className="min-h-screen bg-background text-white">
-			<OnboardingFlow />
+			<OnboardingClient />
 		</main>
 	);
 }

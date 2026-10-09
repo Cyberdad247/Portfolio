@@ -112,53 +112,60 @@ const cardVariants = {
 	},
 };
 
+import { NeuralCard } from "@/components/ui/neural-interface";
+import { tokens } from "@/lib/utils";
+
+// ... (previous imports and services constant)
+
 export default function ServicesSection() {
 	return (
 		<section
 			id="services"
-			className="relative bg-background px-4 py-24 md:px-8"
+			className="relative px-4 py-32 md:px-8 overflow-hidden"
 		>
-			<div className="pointer-events-none absolute right-[10%] top-[20%] z-0 h-[30vw] w-[30vw] rounded-full bg-primary/5 blur-[120px]" />
-
 			<div className="relative z-10 mx-auto max-w-7xl">
 				{/* Section Header */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, margin: "-100px" }}
-					transition={{ duration: 0.6 }}
-					className="mb-16 text-center"
+					transition={tokens.animation.spring}
+					className="mb-24 text-center"
 				>
-					<h2 className="text-balance text-3xl font-bold text-foreground md:text-5xl">
-						Our Services
+					<h2 className="text-balance text-4xl font-extrabold tracking-tight text-white md:text-7xl">
+						Lattice-Scale <span className="text-primary italic">Intelligence</span>
 					</h2>
+					<p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-500 font-mono uppercase tracking-widest">
+						Agentic Solutions // v700.core.services
+					</p>
 				</motion.div>
 
 				{/* Services Grid */}
 				<motion.div
-					variants={containerVariants}
+					variants={tokens.animation.stagger(0.04)}
 					initial="hidden"
 					whileInView="visible"
 					viewport={{ once: true, margin: "-80px" }}
-					className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+					className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
 				>
 					{services.map((service) => (
-						<motion.div
+						<NeuralCard
 							key={service.title}
-							variants={cardVariants}
-							whileHover={{ y: -4, transition: { duration: 0.2 } }}
-							className="group flex flex-col rounded-2xl border border-border bg-card p-6 backdrop-blur-sm transition-colors hover:border-primary/30 hover:bg-muted/30"
+							className="p-8 h-full flex flex-col"
 						>
-							<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
-								<service.icon className="h-6 w-6" />
+							<div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 text-primary border border-white/10 group-hover:border-primary/50 group-hover:bg-primary/10 transition-all duration-500">
+								<service.icon className="h-7 w-7" />
 							</div>
-							<h3 className="text-lg font-bold text-foreground">
+							<h3 className="text-xl font-bold text-white tracking-tight">
 								{service.title}
 							</h3>
-							<p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
+							<p className="mt-4 flex-1 text-sm leading-relaxed text-zinc-500 group-hover:text-zinc-300 transition-colors">
 								{service.description}
 							</p>
-						</motion.div>
+							<div className="mt-6 pt-6 border-t border-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
+								<span className="text-[10px] font-mono text-primary uppercase tracking-[0.2em]">Deploy Node →</span>
+							</div>
+						</NeuralCard>
 					))}
 				</motion.div>
 
@@ -167,15 +174,16 @@ export default function ServicesSection() {
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
-					transition={{ duration: 0.6, delay: 0.4 }}
-					className="mt-16 flex justify-center"
+					transition={{ delay: 0.4 }}
+					className="mt-24 flex justify-center"
 				>
 					<Link
 						href="/services"
-						className="inline-flex items-center gap-3 rounded-full bg-primary/10 border border-primary/20 px-8 py-4 text-sm font-bold text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+						className="group relative inline-flex items-center gap-4 rounded-full bg-white text-black px-10 py-5 text-sm font-bold uppercase tracking-tighter hover:bg-primary transition-all duration-500"
 					>
-						EXPLORE AGENTIC OS TIERS {"//"} 2026
-						<span>→</span>
+						EXPLORE AGENTIC OS TIERS
+						<div className="absolute -inset-1 rounded-full bg-primary/20 blur opacity-0 group-hover:opacity-100 transition-opacity" />
+						<span className="group-hover:translate-x-1 transition-transform">→</span>
 					</Link>
 				</motion.div>
 			</div>

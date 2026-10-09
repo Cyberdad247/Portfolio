@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Cpu } from "lucide-react";
 import { useEffect, useState } from "react";
+import AIArchitectOrbit from "@/components/ai-architect-orbit";
 import { AmbientGlow } from "@/components/ui/ambient-glow";
 import {
 	type AgentConfig,
@@ -150,6 +151,11 @@ export default function AIAgentsPage() {
 							</div>
 						</motion.div>
 					))}
+				</div>
+
+				{/* The Flagship A.I. Architect Living Typographic Orbit */}
+				<div className="mt-20 rounded-3xl overflow-hidden border border-neutral-200/20 shadow-2xl bg-white">
+					<AIArchitectOrbit />
 				</div>
 			</div>
 		</main>
