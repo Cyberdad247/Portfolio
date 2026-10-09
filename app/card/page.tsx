@@ -1,37 +1,38 @@
 import type { Metadata } from "next";
-import DigitalBusinessCard from "@/components/digital-business-card";
+import PortfolioDigitalCard from "@/components/portfolio-digital-card";
 
 export const metadata: Metadata = {
-	title: 'VaShawn "Vizion" Head | Invisioned Marketing Digital Card',
+	title: 'VaShawn "Vizion" Head | Portfolio & Digital Business Card',
 	description:
-		'Founder & Creative Technologist at Invisioned Marketing. Strategy, AI Agents, Web Experiences & Systems. 216-586-4607.',
+		'Founder & Creative Technologist at Invisioned Marketing. Explore our portfolio, autonomous AI agents, living typographic orbit, and save digital card. 216-586-4607.',
 	openGraph: {
-		title: 'VaShawn "Vizion" Head | Digital Business Card',
+		title: 'VaShawn "Vizion" Head | Portfolio & Digital Business Card',
 		description:
-			"Dreams don't come true, visions do. Connect with Invisioned Marketing.",
+			"Dreams don't come true, visions do. Explore portfolio works and connect directly with Invisioned Marketing.",
 		url: "https://invisionedmarketing.agency/card",
 		siteName: "Invisioned Marketing",
 		images: [
 			{
-				url: "/images/logo.webp",
-				width: 512,
-				height: 512,
-				alt: "Invisioned Marketing",
+				url: "/images/ai-architect-i.png",
+				width: 1536,
+				height: 1024,
+				alt: "Invisioned Marketing Portfolio & Digital Business Card",
 			},
 		],
 		type: "profile",
 	},
 	twitter: {
-		card: "summary",
-		title: 'VaShawn "Vizion" Head | Digital Business Card',
-		description: "Invisioned Marketing · Strategy · Systems · Storytelling",
+		card: "summary_large_image",
+		title: 'VaShawn "Vizion" Head | Portfolio & Digital Business Card',
+		description: "Invisioned Marketing · Strategy · Systems · Storytelling · 216-586-4607",
+		images: ["/images/ai-architect-i.png"],
 	},
 };
 
 export default function CardPage() {
 	return (
-		<main className="min-h-screen bg-black text-foreground antialiased selection:bg-[#a855f7]/30 selection:text-[#f6c85f]">
-			<DigitalBusinessCard />
+		<main className="min-h-screen bg-[#07050d] text-foreground antialiased selection:bg-[#792cff]/30 selection:text-[#c9a23f]">
+			<PortfolioDigitalCard />
 		</main>
 	);
 }
