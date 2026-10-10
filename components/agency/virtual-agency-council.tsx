@@ -55,16 +55,34 @@ export default function VirtualAgencyCouncil() {
 			let response = "";
 			switch (activeKnight.id) {
 				case "M-OMEGA":
-					response = `[MERLIN_Ω]: Strategy formulated for "${text}". Formulating 4-step execution DAG: 1. Semantic intent extraction via Anya Gate. 2. Creative brand resonance mapping. 3. Kinetic web system compilation. 4. Living tissue memory crystallization. Estimated turnaround: 48 hours.`;
+					response = `[MERLIN_Ω]: System-2 strategy formulated for "${text}". Formulating 4-step execution DAG: 1. Semantic intent extraction via Anya Gate. 2. Creative brand resonance mapping. 3. Kinetic web system compilation. 4. Living tissue memory crystallization. Estimated turnaround: 48 hours.`;
+					break;
+				case "ANYA-01":
+					response = `[ANYA_Ω]: Ingress intent sanitized: "${text}". Entropy stripped. Coerced to TOON specification: |🧠⊗(⚡💬)⟩ ⟨Omega:Invisioned_Intake⟩. Zero semantic drift detected. Permitted through Anya Gate.`;
+					break;
+				case "STRAT-01":
+					response = `[GENERAL_STRATEGOS]: The Midas Loop engaged for "${text}". Tree of Thoughts (ToT) simulating 3 futures: 1. Aggressive (GEO AI saturation). 2. Balanced (Living orbit web + high-intent citation capture). 3. Guerrilla (Niche programmatic authority). Pre-Mortem risk analysis complete. Selected branch: Balanced.`;
+					break;
+				case "AURA-01":
+					response = `[AMARA 'AURA']: Creative auteur pulse activated for "${text}". Formulating Afro-Futurist chromatic logic. Visual resonance is the frequency of brand truth. Encoding high-status cultural symbols into emotional brand archetyping.`;
+					break;
+				case "VISAGE-01":
+					response = `[SIR_VISAGE]: Visual resonance engine locked. DTCG design token matrix initiated: 60% Obsidian Black (#090712), 30% Luxora Gold (#c9a23f), 10% Royal Purple (#792cff). Neuro-aesthetic contrast ratio: 14.8:1 (Surpasses AAA).`;
 					break;
 				case "B-01":
-					response = `[SIR_BORIS]: Creative direction initialised for "${text}". Deploying Obsidian-Gold aesthetic matrix. Typography set to brutalist high-contrast serif/sans balance. Luxury copy vectors formulated. Your market positioning will command elite status.`;
+					response = `[SIR_BORIS]: Systems architecture and brand worlds initialised for "${text}". Deploying Obsidian-Gold aesthetic matrix. Typography set to brutalist high-contrast serif/sans balance. Luxury copy vectors formulated.`;
+					break;
+				case "HYDRON-01":
+					response = `[SIR_HYDRON]: Isomorphic Island Architecture compiling for "${text}". HTMX hypermedia outer shell + React 19 interactive WebGPU islands. Bundle size reduced by 82%. Zero layout shift (CLS: 0.00).`;
+					break;
+				case "STITCH-01":
+					response = `[SIR_STITCH]: Kinetic mesh woven. WebGPU hardware-accelerated shaders synchronized to 60 FPS. Living Typographic Orbit particles linked via bidirectional WebSocket sockets. Motion layering locked.`;
 					break;
 				case "F-01":
 					response = `[SIR_FORGE]: Technical architecture compiled. Next.js 15 App Router + Tailwind 4 runtime locked. Estimated Time-to-First-Byte (TTFB): 38ms. Z3 formal proof gates passed. Zero performance degradation.`;
 					break;
 				case "H-01":
-					response = `[SIR_HELIOS]: Telemetry cockpit synchronized. Living Typographic Orbit engine configured. WebGPU client-side shader pipeline rendering in 60 FPS at 100% resolution. Central "I" visual anchor locked.`;
+					response = `[SIR_HELIOS]: High-altitude telemetry cockpit synchronized. Living Typographic Orbit engine configured. WebGPU client-side shader pipeline rendering at 60 FPS. Central "I" visual anchor locked to CloudBrain tether.`;
 					break;
 				case "A-02":
 					response = `[LADY_APIS]: Generative Search (GEO) audit initialized for "${text}". Mapping citation probabilities across ChatGPT Search, Perplexity Pro, and Google Gemini. Keyword clusters deployed to programmatic knowledge nodes. Ranking velocity: 94.2% citation capture.`;
@@ -77,6 +95,9 @@ export default function VirtualAgencyCouncil() {
 					break;
 				case "M-02":
 					response = `[LADY_MNEMOSYNE]: Knowledge fabric synchronized. Client context crystal minted in WorldTree VFS (node UUID: a0a4bfb9-e847-4c38). Zero context rot across infinite campaign cycles.`;
+					break;
+				case "GIDEON-01":
+					response = `[SIR_GIDEON & SALLY]: Formal quality & compliance verdict: SATISFIABLE AND SEALED. WCAG 2.1 AA accessibility proof passed. Zero color contrast or keyboard trap violations. Formal invariants verified.`;
 					break;
 				default:
 					response = `[${activeKnight.name}]: Tactical mission brief received for "${text}". Assigned to department queue with priority dispatch.`;
@@ -257,9 +278,11 @@ export default function VirtualAgencyCouncil() {
 							{/* Sample Quick-Click Prompts */}
 							<div className="flex flex-wrap gap-1.5 mb-3">
 								{[
+									"Run The Midas Loop",
 									"Audit our brand positioning",
 									"Generate GEO search strategy",
 									"Build conversion web engine",
+									"Prove formal Z3 invariants",
 								].map((samplePrompt) => (
 									<button
 										key={samplePrompt}
