@@ -9,6 +9,7 @@ import { siteConfig } from "@/config/site";
 
 const navLinks = [
 	{ label: "Virtual Agency", href: "/agency" },
+	{ label: "Web Editor", href: "/editor" },
 	{ label: "Portfolio Card", href: "/card" },
 	{ label: "A.I. Orbit", href: "/architect" },
 	{ label: "Solutions", href: "/services" },
