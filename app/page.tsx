@@ -1,5 +1,6 @@
 import AboutSection from "@/components/about-section";
 import AgenticDashboard from "@/components/agentic-dashboard";
+import VirtualAgencyCouncil from "@/components/agency/virtual-agency-council";
 import ContactSection from "@/components/contact-section";
 import InvisionedHero from "@/components/invisioned-hero";
 import ServicesSection from "@/components/services-section";
@@ -10,6 +11,9 @@ export default function Home() {
 		<main>
 			<div id="hero">
 				<InvisionedHero />
+			</div>
+			<div id="agency">
+				<VirtualAgencyCouncil />
 			</div>
 			<ServicesSection />
 			<TestimonialsSection />

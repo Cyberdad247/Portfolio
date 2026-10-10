@@ -8,12 +8,12 @@ import { useEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 
 const navLinks = [
+	{ label: "Virtual Agency", href: "/agency" },
 	{ label: "Portfolio Card", href: "/card" },
 	{ label: "A.I. Orbit", href: "/architect" },
 	{ label: "Solutions", href: "/services" },
 	{ label: "Tasha", href: "/onboarding" },
 	{ label: "Marketplace", href: "/agent-marketplace" },
-	{ label: "Audit", href: "/audit" },
 	{ label: "Mission Control", href: "/dashboard" },
 ];
 
